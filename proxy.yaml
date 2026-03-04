@@ -1,0 +1,135 @@
+payload:
+  # ======= Telegram =======
+  - DOMAIN-SUFFIX,telegram.org
+  - DOMAIN-SUFFIX,t.me
+  - DOMAIN-SUFFIX,tdesktop.com
+  - DOMAIN-SUFFIX,telesco.pe
+  - DOMAIN-SUFFIX,telegram.me
+  - DOMAIN-SUFFIX,cdn-telegram.org
+  - DOMAIN-SUFFIX,web.telegram.org
+  - IP-CIDR,91.108.4.0/22
+  - IP-CIDR,91.108.8.0/22
+  - IP-CIDR,91.108.12.0/22
+  - IP-CIDR,91.108.16.0/22
+  - IP-CIDR,91.108.20.0/22
+  - IP-CIDR,91.108.56.0/22
+  - IP-CIDR,149.154.160.0/20
+  - IP-CIDR,185.76.151.0/24
+
+  # ======= AI =======
+  # OpenAI / ChatGPT
+  - DOMAIN-SUFFIX,openai.com
+  - DOMAIN-SUFFIX,chatgpt.com
+  - DOMAIN-SUFFIX,oaiusercontent.com
+  - DOMAIN-SUFFIX,oaistatic.com
+  - DOMAIN-SUFFIX,openaiapi-site.azureedge.net
+  - DOMAIN-KEYWORD,openai
+  # Anthropic / Claude
+  - DOMAIN-SUFFIX,anthropic.com
+  - DOMAIN-SUFFIX,claude.ai
+  - DOMAIN-SUFFIX,claude.com
+  # Google AI
+  - DOMAIN-SUFFIX,gemini.google.com
+  - DOMAIN-SUFFIX,aistudio.google.com
+  - DOMAIN-SUFFIX,generativelanguage.googleapis.com
+  - DOMAIN-SUFFIX,generativeai.google
+  - DOMAIN-SUFFIX,notebooklm.google
+  - DOMAIN-SUFFIX,notebooklm.google.com
+  - DOMAIN-SUFFIX,makersuite.google.com
+  - DOMAIN-SUFFIX,deepmind.google
+  - DOMAIN-SUFFIX,deepmind.com
+  - DOMAIN-SUFFIX,bard.google.com
+  - DOMAIN,ai.google.dev
+  - DOMAIN,jules.google.com
+  - DOMAIN,proactivebackend-pa.googleapis.com
+  - DOMAIN-SUFFIX,geller-pa.googleapis.com
+  - DOMAIN,alkalicore-pa.clients6.google.com
+  # Perplexity
+  - DOMAIN-SUFFIX,perplexity.ai
+  # HuggingFace
+  - DOMAIN-SUFFIX,huggingface.co
+  # Mistral
+  - DOMAIN-SUFFIX,mistral.ai
+  # Groq / Grok / xAI
+  - DOMAIN-SUFFIX,groq.com
+  - DOMAIN-SUFFIX,grok.com
+  - DOMAIN-SUFFIX,x.ai
+  # Stability
+  - DOMAIN-SUFFIX,stability.ai
+  - DOMAIN-SUFFIX,clipdrop.co
+  # Sora
+  - DOMAIN-SUFFIX,sora.com
+  # Other AI
+  - DOMAIN-SUFFIX,poe.com
+  - DOMAIN-SUFFIX,ai.com
+  - DOMAIN-SUFFIX,chat.com
+  - DOMAIN-SUFFIX,meta.ai
+  - DOMAIN-SUFFIX,dify.ai
+  - DOMAIN-SUFFIX,openart.ai
+  - DOMAIN-SUFFIX,jasper.ai
+  - DOMAIN,gateway.ai.cloudflare.com
+
+  # ======= Social =======
+  # Twitter / X
+  - DOMAIN-SUFFIX,x.com
+  - DOMAIN-SUFFIX,twitter.com
+  - DOMAIN-SUFFIX,twimg.com
+  # Instagram
+  - DOMAIN-SUFFIX,instagram.com
+  - DOMAIN-SUFFIX,cdninstagram.com
+  # Facebook
+  - DOMAIN-SUFFIX,facebook.com
+  - DOMAIN-SUFFIX,fbcdn.net
+  # WhatsApp
+  - DOMAIN-SUFFIX,whatsapp.com
+  - DOMAIN-SUFFIX,whatsapp.net
+  # LinkedIn
+  - DOMAIN-SUFFIX,linkedin.com
+  - DOMAIN-SUFFIX,licdn.com
+  - DOMAIN-SUFFIX,lnkd.in
+  - DOMAIN-KEYWORD,linkedin
+  # Discord
+  - DOMAIN-SUFFIX,discord.com
+  - DOMAIN-SUFFIX,discordapp.com
+  - DOMAIN-SUFFIX,discord.gg
+  # Slack
+  - DOMAIN-SUFFIX,slack.com
+  # Zoom / Meet
+  - DOMAIN-SUFFIX,zoom.us
+  - DOMAIN-SUFFIX,meet.google.com
+
+  # ======= YouTube / Spotify / Media =======
+  - DOMAIN-SUFFIX,youtube.com
+  - DOMAIN-SUFFIX,ytimg.com
+  - DOMAIN-SUFFIX,googlevideo.com
+  - DOMAIN-SUFFIX,youtu.be
+  - DOMAIN-SUFFIX,yt.be
+  - DOMAIN-SUFFIX,youtube-nocookie.com
+  - DOMAIN-SUFFIX,ggpht.com
+  - DOMAIN-SUFFIX,googleusercontent.com
+  - DOMAIN-SUFFIX,gstatic.com
+  # Spotify
+  - DOMAIN-SUFFIX,spotify.com
+  - DOMAIN-SUFFIX,scdn.co
+  # Medium
+  - DOMAIN-SUFFIX,medium.com
+
+  # ======= Dev Tools =======
+  # JetBrains / Grazie
+  - DOMAIN-SUFFIX,jetbrains.com
+  - DOMAIN-SUFFIX,jetbrains.net
+  - DOMAIN-SUFFIX,jetbrains.org
+  - DOMAIN-SUFFIX,jetbrains.ai
+  - DOMAIN-SUFFIX,grazie.ai
+  - DOMAIN-SUFFIX,grazie.aws.intellij.net
+  - DOMAIN-SUFFIX,grazie.jetbrains.com
+  - DOMAIN,api.jetbrains.ai
+  # GitHub API
+  - DOMAIN,api.github.com
+  # Google APIs
+  - DOMAIN-SUFFIX,googleapis.com
+  # Confluent (Kafka docs)
+  - DOMAIN-SUFFIX,confluent.io
+  # Auth
+  - DOMAIN-SUFFIX,auth0.com
+  - DOMAIN-SUFFIX,sentry.io

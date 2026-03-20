@@ -1,0 +1,193 @@
+name: Update proxy rules
+
+on:
+  schedule:
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update proxy.yaml
+        run: |
+          pip install pyyaml
+          python3 << 'SCRIPT'
+          import urllib.request
+          import yaml
+
+          # Сервисы из blackmatrix7/ios_rule_script
+          SERVICES = [
+              "Telegram",
+              "OpenAI",
+              "Anthropic",
+              "Gemini",
+              "YouTube",
+              "Discord",
+              "Spotify",
+              "Facebook",
+              "Instagram",
+              "Twitter",
+              "WhatsApp",
+              "LinkedIn",
+              "Slack",
+          ]
+
+          BASE = "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash"
+          SKIP_PREFIXES = ("PROCESS-NAME", "IP-ASN", "USER-AGENT", "IP-CIDR6")
+
+          SECTION_MAP = {
+              "Telegram": "Telegram",
+              "OpenAI": "AI", "Anthropic": "AI", "Gemini": "AI",
+              "YouTube": "Media", "Spotify": "Media",
+              "Discord": "Social", "Facebook": "Social", "Instagram": "Social",
+              "Twitter": "Social", "WhatsApp": "Social", "LinkedIn": "Social",
+              "Slack": "Social",
+          }
+
+          SECTION_ORDER = ["Telegram", "AI", "Social", "Media"]
+
+          # Правила из blackmatrix7, которых нет у нас (добавляем в Telegram)
+          # + правила из v2fly/Loyalsoldier, которых нет в blackmatrix7
+          EXTRA_TELEGRAM = [
+              "DOMAIN-SUFFIX,fragment.com",
+              "DOMAIN-SUFFIX,ton.org",
+              "IP-CIDR,91.105.192.0/23",
+              "IP-CIDR,95.161.64.0/20",
+          ]
+
+          CUSTOM = [
+              "",
+              "# ======= AI (custom) =======",
+              "# Perplexity",
+              "DOMAIN-SUFFIX,perplexity.ai",
+              "# HuggingFace",
+              "DOMAIN-SUFFIX,huggingface.co",
+              "# Mistral",
+              "DOMAIN-SUFFIX,mistral.ai",
+              "# Groq / xAI",
+              "DOMAIN-SUFFIX,groq.com",
+              "DOMAIN-SUFFIX,x.ai",
+              "# Stability",
+              "DOMAIN-SUFFIX,stability.ai",
+              "DOMAIN-SUFFIX,clipdrop.co",
+              "# Sora",
+              "DOMAIN-SUFFIX,sora.com",
+              "# Other AI",
+              "DOMAIN-SUFFIX,poe.com",
+              "DOMAIN-SUFFIX,ai.com",
+              "DOMAIN-SUFFIX,chat.com",
+              "DOMAIN-SUFFIX,meta.ai",
+              "DOMAIN-SUFFIX,dify.ai",
+              "DOMAIN-SUFFIX,openart.ai",
+              "DOMAIN-SUFFIX,jasper.ai",
+              "DOMAIN,gateway.ai.cloudflare.com",
+              "",
+              "# ======= Media (custom) =======",
+              "DOMAIN-SUFFIX,medium.com",
+              "",
+              "# ======= Social (custom) =======",
+              "# Zoom",
+              "DOMAIN-SUFFIX,zoom.us",
+              "DOMAIN-SUFFIX,meet.google.com",
+              "",
+              "# ======= Dev Tools (custom) =======",
+              "# JetBrains / Grazie",
+              "DOMAIN-SUFFIX,jetbrains.com",
+              "DOMAIN-SUFFIX,jetbrains.net",
+              "DOMAIN-SUFFIX,jetbrains.org",
+              "DOMAIN-SUFFIX,jetbrains.ai",
+              "DOMAIN-SUFFIX,grazie.ai",
+              "DOMAIN-SUFFIX,grazie.aws.intellij.net",
+              "DOMAIN-SUFFIX,grazie.jetbrains.com",
+              "DOMAIN,api.jetbrains.ai",
+              "# Google APIs",
+              "DOMAIN-SUFFIX,googleapis.com",
+              "# Confluent (Kafka docs)",
+              "DOMAIN-SUFFIX,confluent.io",
+              "# Auth",
+              "DOMAIN-SUFFIX,auth0.com",
+              "DOMAIN-SUFFIX,sentry.io",
+              "# Other",
+              "DOMAIN-SUFFIX,googlesyndication.com",
+              "DOMAIN,lh3.googleusercontent.com",
+              "DOMAIN-SUFFIX,randomnerdtutorials.com",
+              "DOMAIN-SUFFIX,techradar.aoe.com",
+              "DOMAIN-SUFFIX,frontier-enterprise.com",
+              "DOMAIN-SUFFIX,diyrobocars.com",
+              "DOMAIN-SUFFIX,thoughtworks.com",
+          ]
+
+          # --- Fetch rules from blackmatrix7 ---
+          sections = {}
+          for svc in SERVICES:
+              url = f"{BASE}/{svc}/{svc}.yaml"
+              try:
+                  resp = urllib.request.urlopen(url)
+                  data = yaml.safe_load(resp.read())
+                  rules = data.get("payload", [])
+                  section = SECTION_MAP.get(svc, "Other")
+                  sections.setdefault(section, [])
+                  sections[section].append(f"# {svc}")
+                  for rule in rules:
+                      if any(rule.startswith(p) for p in SKIP_PREFIXES):
+                          continue
+                      sections[section].append(rule)
+                  print(f"OK: {svc} ({len(rules)} rules)")
+              except Exception as e:
+                  print(f"WARN: {svc} - {e}")
+
+          # Add extra Telegram rules from v2fly/Loyalsoldier
+          if "Telegram" in sections:
+              existing = set(sections["Telegram"])
+              for rule in EXTRA_TELEGRAM:
+                  if rule not in existing:
+                      sections["Telegram"].append(rule)
+
+          # --- Build proxy.yaml ---
+          lines = ["payload:"]
+
+          for section in SECTION_ORDER:
+              if section not in sections:
+                  continue
+              lines.append("")
+              lines.append(f"  # ======= {section} =======")
+              for rule in sections[section]:
+                  if rule.startswith("#"):
+                      lines.append(f"  # {rule[2:]}")
+                  else:
+                      lines.append(f"  - {rule}")
+
+          # Custom rules (not in blackmatrix7)
+          for rule in CUSTOM:
+              if rule == "":
+                  lines.append("")
+              elif rule.startswith("#"):
+                  lines.append(f"  {rule}")
+              else:
+                  lines.append(f"  - {rule}")
+
+          lines.append("")
+          new_content = "\n".join(lines)
+
+          with open("proxy.yaml", "r") as f:
+              old_content = f.read()
+
+          if new_content != old_content:
+              with open("proxy.yaml", "w") as f:
+                  f.write(new_content)
+              print("UPDATED: proxy.yaml changed")
+          else:
+              print("NO CHANGES")
+          SCRIPT
+
+      - name: Commit and push
+        run: |
+          git diff --quiet proxy.yaml && echo "Nothing to commit" && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add proxy.yaml
+          git commit -m "auto: update proxy rules $(date +%Y-%m-%d)"
+          git push

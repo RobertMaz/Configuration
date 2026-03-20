@@ -13,7 +13,7 @@ jobs:
 
       - name: Update proxy.yaml
         run: |
-          pip install pyyaml
+          pip install pyyaml -q
           python3 << 'SCRIPT'
           import urllib.request
           import yaml
@@ -27,12 +27,10 @@ jobs:
               "YouTube",
               "Discord",
               "Spotify",
-              "Facebook",
-              "Instagram",
               "Twitter",
-              "WhatsApp",
               "LinkedIn",
               "Slack",
+              "Whatsapp",
           ]
 
           BASE = "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash"
@@ -42,9 +40,9 @@ jobs:
               "Telegram": "Telegram",
               "OpenAI": "AI", "Anthropic": "AI", "Gemini": "AI",
               "YouTube": "Media", "Spotify": "Media",
-              "Discord": "Social", "Facebook": "Social", "Instagram": "Social",
-              "Twitter": "Social", "WhatsApp": "Social", "LinkedIn": "Social",
-              "Slack": "Social",
+              "Discord": "Social",
+              "Twitter": "Social", "LinkedIn": "Social",
+              "Slack": "Social", "Whatsapp": "Social",
           }
 
           SECTION_ORDER = ["Telegram", "AI", "Social", "Media"]
@@ -89,6 +87,18 @@ jobs:
               "DOMAIN-SUFFIX,medium.com",
               "",
               "# ======= Social (custom) =======",
+              "# Facebook",
+              "DOMAIN-SUFFIX,facebook.com",
+              "DOMAIN-SUFFIX,fbcdn.net",
+              "DOMAIN-SUFFIX,fbcdn.com",
+              "DOMAIN-SUFFIX,fb.com",
+              "DOMAIN-SUFFIX,fb.me",
+              "DOMAIN-SUFFIX,messenger.com",
+              "DOMAIN-KEYWORD,facebook",
+              "# Instagram",
+              "DOMAIN-SUFFIX,instagram.com",
+              "DOMAIN-SUFFIX,cdninstagram.com",
+              "DOMAIN-KEYWORD,instagram",
               "# Zoom",
               "DOMAIN-SUFFIX,zoom.us",
               "DOMAIN-SUFFIX,meet.google.com",
@@ -107,9 +117,6 @@ jobs:
               "DOMAIN-SUFFIX,googleapis.com",
               "# Confluent (Kafka docs)",
               "DOMAIN-SUFFIX,confluent.io",
-              "# Auth",
-              "DOMAIN-SUFFIX,auth0.com",
-              "DOMAIN-SUFFIX,sentry.io",
               "# Other",
               "DOMAIN-SUFFIX,googlesyndication.com",
               "DOMAIN,lh3.googleusercontent.com",

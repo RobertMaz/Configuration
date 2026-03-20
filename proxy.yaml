@@ -1,82 +1,431 @@
 payload:
+
   # ======= Telegram =======
-  - DOMAIN-SUFFIX,telegram.org
-  - DOMAIN-SUFFIX,t.me
-  - DOMAIN-SUFFIX,tdesktop.com
-  - DOMAIN-SUFFIX,telesco.pe
-  - DOMAIN-SUFFIX,telegram.me
-  - DOMAIN-SUFFIX,cdn-telegram.org
-  - DOMAIN-SUFFIX,comments.app                                                                                                                                          
-  - DOMAIN-SUFFIX,contest.com                                                                                                                                           
-  - DOMAIN-SUFFIX,fragment.com                                                                                                                                          
-  - DOMAIN-SUFFIX,graph.org                                                                                                                                             
-  - DOMAIN-SUFFIX,quiz.directory                                                                                                                                        
-  - DOMAIN-SUFFIX,telega.one                                                                                                                                            
-  - DOMAIN-SUFFIX,telegra.ph                                                                                                                                            
-  - DOMAIN-SUFFIX,telegram-cdn.org                                                                                                                                      
-  - DOMAIN-SUFFIX,telegram.dog                              
-  - DOMAIN-SUFFIX,telegram.space                                                                                                                                        
-  - DOMAIN-SUFFIX,tg.dev                                                                                                                                                
-  - DOMAIN-SUFFIX,ton.org                                                                                                                                               
-  - DOMAIN-SUFFIX,tx.me                                                                                                                                                 
-  - DOMAIN-SUFFIX,usercontent.dev
-  - DOMAIN-SUFFIX,legra.ph
-  - DOMAIN-SUFFIX,mbrx.app
-  - DOMAIN-SUFFIX,stel.com
-  - DOMAIN-SUFFIX,telegramdownload.com
+  # Telegram
   - DOMAIN,api.imem.app
   - DOMAIN,api.swiftgram.app
+  - DOMAIN-SUFFIX,cdn-telegram.org
+  - DOMAIN-SUFFIX,comments.app
+  - DOMAIN-SUFFIX,contest.com
+  - DOMAIN-SUFFIX,graph.org
+  - DOMAIN-SUFFIX,legra.ph
+  - DOMAIN-SUFFIX,mbrx.app
+  - DOMAIN-SUFFIX,quiz.directory
+  - DOMAIN-SUFFIX,stel.com
+  - DOMAIN-SUFFIX,t.me
+  - DOMAIN-SUFFIX,tdesktop.com
+  - DOMAIN-SUFFIX,telega.one
+  - DOMAIN-SUFFIX,telegra.ph
+  - DOMAIN-SUFFIX,telegram-cdn.org
+  - DOMAIN-SUFFIX,telegram.dog
+  - DOMAIN-SUFFIX,telegram.me
+  - DOMAIN-SUFFIX,telegram.org
+  - DOMAIN-SUFFIX,telegram.space
+  - DOMAIN-SUFFIX,telegramdownload.com
+  - DOMAIN-SUFFIX,telesco.pe
+  - DOMAIN-SUFFIX,tg.dev
+  - DOMAIN-SUFFIX,tx.me
+  - DOMAIN-SUFFIX,usercontent.dev
   - DOMAIN-KEYWORD,nicegram
-  - IP-CIDR,91.108.0.0/16
-  - IP-CIDR,149.154.160.0/20
-  - IP-CIDR,185.76.151.0/24
-  - IP-CIDR,91.105.192.0/23
-  - IP-CIDR,95.161.64.0/20
-  - IP-CIDR,5.28.192.0/18
   - IP-CIDR,109.239.140.0/24
   - IP-CIDR,139.59.210.98/32
+  - IP-CIDR,149.154.160.0/20
   - IP-CIDR,196.55.216.167/32
-
+  - IP-CIDR,5.28.192.0/18
+  - IP-CIDR,91.108.0.0/16
+  - DOMAIN-SUFFIX,fragment.com
+  - DOMAIN-SUFFIX,ton.org
+  - IP-CIDR,91.105.192.0/23
+  - IP-CIDR,95.161.64.0/20
 
   # ======= AI =======
-  # OpenAI / ChatGPT
-  - DOMAIN-SUFFIX,openai.com
+  # OpenAI
+  - DOMAIN,browser-intake-datadoghq.com
+  - DOMAIN,chat.openai.com.cdn.cloudflare.net
+  - DOMAIN,openai-api.arkoselabs.com
+  - DOMAIN,openaicom-api-bdcpf8c6d2e9atf6.z01.azurefd.net
+  - DOMAIN,openaicomproductionae4b.blob.core.windows.net
+  - DOMAIN,production-openaicom-storage.azureedge.net
+  - DOMAIN,static.cloudflareinsights.com
+  - DOMAIN-SUFFIX,ai.com
+  - DOMAIN-SUFFIX,algolia.net
+  - DOMAIN-SUFFIX,api.statsig.com
+  - DOMAIN-SUFFIX,auth0.com
   - DOMAIN-SUFFIX,chatgpt.com
-  - DOMAIN-SUFFIX,oaiusercontent.com
+  - DOMAIN-SUFFIX,chatgpt.livekit.cloud
+  - DOMAIN-SUFFIX,client-api.arkoselabs.com
+  - DOMAIN-SUFFIX,events.statsigapi.net
+  - DOMAIN-SUFFIX,featuregates.org
+  - DOMAIN-SUFFIX,host.livekit.cloud
+  - DOMAIN-SUFFIX,identrust.com
+  - DOMAIN-SUFFIX,intercom.io
+  - DOMAIN-SUFFIX,intercomcdn.com
+  - DOMAIN-SUFFIX,launchdarkly.com
   - DOMAIN-SUFFIX,oaistatic.com
+  - DOMAIN-SUFFIX,oaiusercontent.com
+  - DOMAIN-SUFFIX,observeit.net
+  - DOMAIN-SUFFIX,openai.com
   - DOMAIN-SUFFIX,openaiapi-site.azureedge.net
+  - DOMAIN-SUFFIX,openaicom.imgix.net
+  - DOMAIN-SUFFIX,segment.io
+  - DOMAIN-SUFFIX,sentry.io
+  - DOMAIN-SUFFIX,stripe.com
+  - DOMAIN-SUFFIX,turn.livekit.cloud
   - DOMAIN-KEYWORD,openai
-  # Anthropic / Claude
+  - IP-CIDR,24.199.123.28/32
+  - IP-CIDR,64.23.132.171/32
+  # Anthropic
+  - DOMAIN,servd-anthropic-website.b-cdn.net
   - DOMAIN-SUFFIX,anthropic.com
   - DOMAIN-SUFFIX,claude.ai
-  - DOMAIN-SUFFIX,claude.com
-  # Google AI
-  - DOMAIN-SUFFIX,gemini.google.com
-  - DOMAIN-SUFFIX,aistudio.google.com
-  - DOMAIN-SUFFIX,generativelanguage.googleapis.com
-  - DOMAIN-SUFFIX,generativeai.google
-  - DOMAIN-SUFFIX,notebooklm.google
-  - DOMAIN-SUFFIX,notebooklm.google.com
-  - DOMAIN-SUFFIX,makersuite.google.com
-  - DOMAIN-SUFFIX,deepmind.google
-  - DOMAIN-SUFFIX,deepmind.com
-  - DOMAIN-SUFFIX,bard.google.com
+  # Gemini
   - DOMAIN,ai.google.dev
-  - DOMAIN,jules.google.com
-  - DOMAIN,proactivebackend-pa.googleapis.com
-  - DOMAIN-SUFFIX,geller-pa.googleapis.com
-  - DOMAIN,alkalicore-pa.clients6.google.com
   - DOMAIN,alkalimakersuite-pa.clients6.google.com
+  - DOMAIN,makersuite.google.com
+  - DOMAIN-SUFFIX,bard.google.com
+  - DOMAIN-SUFFIX,deepmind.com
+  - DOMAIN-SUFFIX,deepmind.google
+  - DOMAIN-SUFFIX,gemini.google.com
+  - DOMAIN-SUFFIX,generativeai.google
+  - DOMAIN-SUFFIX,proactivebackend-pa.googleapis.com
+  - DOMAIN-SUFFIX,apis.google.com
+  - DOMAIN-KEYWORD,colab
+  - DOMAIN-KEYWORD,developerprofiles
+  - DOMAIN-KEYWORD,generativelanguage
 
+  # ======= Social =======
+  # Discord
+  - DOMAIN-SUFFIX,airhorn.solutions
+  - DOMAIN-SUFFIX,airhornbot.com
+  - DOMAIN-SUFFIX,bigbeans.solutions
+  - DOMAIN-SUFFIX,dis.gd
+  - DOMAIN-SUFFIX,discord-activities.com
+  - DOMAIN-SUFFIX,discord-attachments-uploads-prd.storage.googleapis.com
+  - DOMAIN-SUFFIX,discord.co
+  - DOMAIN-SUFFIX,discord.com
+  - DOMAIN-SUFFIX,discord.design
+  - DOMAIN-SUFFIX,discord.dev
+  - DOMAIN-SUFFIX,discord.gg
+  - DOMAIN-SUFFIX,discord.gift
+  - DOMAIN-SUFFIX,discord.gifts
+  - DOMAIN-SUFFIX,discord.media
+  - DOMAIN-SUFFIX,discord.new
+  - DOMAIN-SUFFIX,discord.store
+  - DOMAIN-SUFFIX,discord.tools
+  - DOMAIN-SUFFIX,discordactivities.com
+  - DOMAIN-SUFFIX,discordapp.com
+  - DOMAIN-SUFFIX,discordapp.io
+  - DOMAIN-SUFFIX,discordapp.net
+  - DOMAIN-SUFFIX,discordapp.page.link
+  - DOMAIN-SUFFIX,discordcdn.com
+  - DOMAIN-SUFFIX,discordmerch.com
+  - DOMAIN-SUFFIX,discordpartygames.com
+  - DOMAIN-SUFFIX,discordsays.com
+  - DOMAIN-SUFFIX,discordstatus.com
+  - DOMAIN-SUFFIX,hammerandchisel.ssl.zendesk.com
+  - DOMAIN-SUFFIX,watchanimeattheoffice.com
+  # Twitter
+  - DOMAIN-SUFFIX,ads-twitter.com
+  - DOMAIN-SUFFIX,cms-twdigitalassets.com
+  - DOMAIN-SUFFIX,grok.com
+  - DOMAIN-SUFFIX,periscope.tv
+  - DOMAIN-SUFFIX,pscp.tv
+  - DOMAIN-SUFFIX,t.co
+  - DOMAIN-SUFFIX,tellapart.com
+  - DOMAIN-SUFFIX,tweetdeck.com
+  - DOMAIN-SUFFIX,twimg.co
+  - DOMAIN-SUFFIX,twimg.com
+  - DOMAIN-SUFFIX,twimg.org
+  - DOMAIN-SUFFIX,twitpic.com
+  - DOMAIN-SUFFIX,twitter.biz
+  - DOMAIN-SUFFIX,twitter.com
+  - DOMAIN-SUFFIX,twitter.jp
+  - DOMAIN-SUFFIX,twittercommunity.com
+  - DOMAIN-SUFFIX,twitterflightschool.com
+  - DOMAIN-SUFFIX,twitterinc.com
+  - DOMAIN-SUFFIX,twitteroauth.com
+  - DOMAIN-SUFFIX,twitterstat.us
+  - DOMAIN-SUFFIX,twtrdns.net
+  - DOMAIN-SUFFIX,twttr.com
+  - DOMAIN-SUFFIX,twttr.net
+  - DOMAIN-SUFFIX,twvid.com
+  - DOMAIN-SUFFIX,vine.co
+  - DOMAIN-SUFFIX,x.com
+  - DOMAIN-KEYWORD,twitter
+  - IP-CIDR,192.133.76.0/22
+  - IP-CIDR,199.59.148.0/22
+  - IP-CIDR,199.96.56.0/21
+  - IP-CIDR,202.160.128.0/22
+  - IP-CIDR,209.237.192.0/19
+  - IP-CIDR,69.195.160.0/19
+  # LinkedIn
+  - DOMAIN,e122475.dscg.akamaiedge.net
+  - DOMAIN,licdn.cn.cdn20.com
+  - DOMAIN,linkedin.sc.omtrdc.net
+  - DOMAIN-SUFFIX,bizographics.com
+  - DOMAIN-SUFFIX,l-0005.dc-msedge.net
+  - DOMAIN-SUFFIX,l-0005.l-msedge.net
+  - DOMAIN-SUFFIX,licdn.cn
+  - DOMAIN-SUFFIX,licdn.com
+  - DOMAIN-SUFFIX,linkedin.at
+  - DOMAIN-SUFFIX,linkedin.cn
+  - DOMAIN-SUFFIX,linkedin.com
+  - DOMAIN-SUFFIX,lnkd.in
+  # Slack
+  - DOMAIN-SUFFIX,slack-core.com
+  - DOMAIN-SUFFIX,slack-edge.com
+  - DOMAIN-SUFFIX,slack-files.com
+  - DOMAIN-SUFFIX,slack-imgs.com
+  - DOMAIN-SUFFIX,slack-msgs.com
+  - DOMAIN-SUFFIX,slack-redir.net
+  - DOMAIN-SUFFIX,slack.com
+  - DOMAIN-SUFFIX,slackb.com
+  - DOMAIN-SUFFIX,slackcertified.com
+  - DOMAIN-SUFFIX,slackdemo.com
+  - DOMAIN-SUFFIX,slackhq.com
+  # Whatsapp
+  - DOMAIN,graph.facebook.com
+  - DOMAIN-SUFFIX,bintray.com
+  - DOMAIN-SUFFIX,whatsapp.biz
+  - DOMAIN-SUFFIX,whatsapp.com
+  - DOMAIN-SUFFIX,whatsapp.net
+  - DOMAIN-KEYWORD,whatsapp
+  - IP-CIDR,158.85.224.160/27
+  - IP-CIDR,158.85.46.128/27
+  - IP-CIDR,158.85.5.192/27
+  - IP-CIDR,173.192.222.160/27
+  - IP-CIDR,173.192.231.32/27
+  - IP-CIDR,18.194.0.0/15
+  - IP-CIDR,184.173.128.0/17
+  - IP-CIDR,208.43.122.128/27
+  - IP-CIDR,34.224.0.0/12
+  - IP-CIDR,50.22.198.204/30
+  - IP-CIDR,54.242.0.0/15
+
+  # ======= Media =======
+  # YouTube
+  - DOMAIN-SUFFIX,ggpht.cn
+  - DOMAIN-SUFFIX,ggpht.com
+  - DOMAIN-SUFFIX,googlevideo.com
+  - DOMAIN-SUFFIX,gvt1.com
+  - DOMAIN-SUFFIX,gvt2.com
+  - DOMAIN-SUFFIX,video.google.com
+  - DOMAIN-SUFFIX,wide-youtube.l.google.com
+  - DOMAIN-SUFFIX,withyoutube.com
+  - DOMAIN-SUFFIX,youtu.be
+  - DOMAIN-SUFFIX,youtube
+  - DOMAIN-SUFFIX,youtube-nocookie.com
+  - DOMAIN-SUFFIX,youtube-ui.l.google.com
+  - DOMAIN-SUFFIX,youtube.ae
+  - DOMAIN-SUFFIX,youtube.al
+  - DOMAIN-SUFFIX,youtube.am
+  - DOMAIN-SUFFIX,youtube.at
+  - DOMAIN-SUFFIX,youtube.az
+  - DOMAIN-SUFFIX,youtube.ba
+  - DOMAIN-SUFFIX,youtube.be
+  - DOMAIN-SUFFIX,youtube.bg
+  - DOMAIN-SUFFIX,youtube.bh
+  - DOMAIN-SUFFIX,youtube.bo
+  - DOMAIN-SUFFIX,youtube.by
+  - DOMAIN-SUFFIX,youtube.ca
+  - DOMAIN-SUFFIX,youtube.cat
+  - DOMAIN-SUFFIX,youtube.ch
+  - DOMAIN-SUFFIX,youtube.cl
+  - DOMAIN-SUFFIX,youtube.co
+  - DOMAIN-SUFFIX,youtube.co.ae
+  - DOMAIN-SUFFIX,youtube.co.at
+  - DOMAIN-SUFFIX,youtube.co.cr
+  - DOMAIN-SUFFIX,youtube.co.hu
+  - DOMAIN-SUFFIX,youtube.co.id
+  - DOMAIN-SUFFIX,youtube.co.il
+  - DOMAIN-SUFFIX,youtube.co.in
+  - DOMAIN-SUFFIX,youtube.co.jp
+  - DOMAIN-SUFFIX,youtube.co.ke
+  - DOMAIN-SUFFIX,youtube.co.kr
+  - DOMAIN-SUFFIX,youtube.co.ma
+  - DOMAIN-SUFFIX,youtube.co.nz
+  - DOMAIN-SUFFIX,youtube.co.th
+  - DOMAIN-SUFFIX,youtube.co.tz
+  - DOMAIN-SUFFIX,youtube.co.ug
+  - DOMAIN-SUFFIX,youtube.co.uk
+  - DOMAIN-SUFFIX,youtube.co.ve
+  - DOMAIN-SUFFIX,youtube.co.za
+  - DOMAIN-SUFFIX,youtube.co.zw
+  - DOMAIN-SUFFIX,youtube.com
+  - DOMAIN-SUFFIX,youtube.com.ar
+  - DOMAIN-SUFFIX,youtube.com.au
+  - DOMAIN-SUFFIX,youtube.com.az
+  - DOMAIN-SUFFIX,youtube.com.bd
+  - DOMAIN-SUFFIX,youtube.com.bh
+  - DOMAIN-SUFFIX,youtube.com.bo
+  - DOMAIN-SUFFIX,youtube.com.br
+  - DOMAIN-SUFFIX,youtube.com.by
+  - DOMAIN-SUFFIX,youtube.com.co
+  - DOMAIN-SUFFIX,youtube.com.do
+  - DOMAIN-SUFFIX,youtube.com.ec
+  - DOMAIN-SUFFIX,youtube.com.ee
+  - DOMAIN-SUFFIX,youtube.com.eg
+  - DOMAIN-SUFFIX,youtube.com.es
+  - DOMAIN-SUFFIX,youtube.com.gh
+  - DOMAIN-SUFFIX,youtube.com.gr
+  - DOMAIN-SUFFIX,youtube.com.gt
+  - DOMAIN-SUFFIX,youtube.com.hk
+  - DOMAIN-SUFFIX,youtube.com.hn
+  - DOMAIN-SUFFIX,youtube.com.hr
+  - DOMAIN-SUFFIX,youtube.com.jm
+  - DOMAIN-SUFFIX,youtube.com.jo
+  - DOMAIN-SUFFIX,youtube.com.kw
+  - DOMAIN-SUFFIX,youtube.com.lb
+  - DOMAIN-SUFFIX,youtube.com.lv
+  - DOMAIN-SUFFIX,youtube.com.ly
+  - DOMAIN-SUFFIX,youtube.com.mk
+  - DOMAIN-SUFFIX,youtube.com.mt
+  - DOMAIN-SUFFIX,youtube.com.mx
+  - DOMAIN-SUFFIX,youtube.com.my
+  - DOMAIN-SUFFIX,youtube.com.ng
+  - DOMAIN-SUFFIX,youtube.com.ni
+  - DOMAIN-SUFFIX,youtube.com.om
+  - DOMAIN-SUFFIX,youtube.com.pa
+  - DOMAIN-SUFFIX,youtube.com.pe
+  - DOMAIN-SUFFIX,youtube.com.ph
+  - DOMAIN-SUFFIX,youtube.com.pk
+  - DOMAIN-SUFFIX,youtube.com.pt
+  - DOMAIN-SUFFIX,youtube.com.py
+  - DOMAIN-SUFFIX,youtube.com.qa
+  - DOMAIN-SUFFIX,youtube.com.ro
+  - DOMAIN-SUFFIX,youtube.com.sa
+  - DOMAIN-SUFFIX,youtube.com.sg
+  - DOMAIN-SUFFIX,youtube.com.sv
+  - DOMAIN-SUFFIX,youtube.com.tn
+  - DOMAIN-SUFFIX,youtube.com.tr
+  - DOMAIN-SUFFIX,youtube.com.tw
+  - DOMAIN-SUFFIX,youtube.com.ua
+  - DOMAIN-SUFFIX,youtube.com.uy
+  - DOMAIN-SUFFIX,youtube.com.ve
+  - DOMAIN-SUFFIX,youtube.cr
+  - DOMAIN-SUFFIX,youtube.cz
+  - DOMAIN-SUFFIX,youtube.de
+  - DOMAIN-SUFFIX,youtube.dk
+  - DOMAIN-SUFFIX,youtube.ee
+  - DOMAIN-SUFFIX,youtube.es
+  - DOMAIN-SUFFIX,youtube.fi
+  - DOMAIN-SUFFIX,youtube.fr
+  - DOMAIN-SUFFIX,youtube.ge
+  - DOMAIN-SUFFIX,youtube.googleapis.com
+  - DOMAIN-SUFFIX,youtube.gr
+  - DOMAIN-SUFFIX,youtube.gt
+  - DOMAIN-SUFFIX,youtube.hk
+  - DOMAIN-SUFFIX,youtube.hr
+  - DOMAIN-SUFFIX,youtube.hu
+  - DOMAIN-SUFFIX,youtube.ie
+  - DOMAIN-SUFFIX,youtube.in
+  - DOMAIN-SUFFIX,youtube.iq
+  - DOMAIN-SUFFIX,youtube.is
+  - DOMAIN-SUFFIX,youtube.it
+  - DOMAIN-SUFFIX,youtube.jo
+  - DOMAIN-SUFFIX,youtube.jp
+  - DOMAIN-SUFFIX,youtube.kr
+  - DOMAIN-SUFFIX,youtube.kz
+  - DOMAIN-SUFFIX,youtube.la
+  - DOMAIN-SUFFIX,youtube.lk
+  - DOMAIN-SUFFIX,youtube.lt
+  - DOMAIN-SUFFIX,youtube.lu
+  - DOMAIN-SUFFIX,youtube.lv
+  - DOMAIN-SUFFIX,youtube.ly
+  - DOMAIN-SUFFIX,youtube.ma
+  - DOMAIN-SUFFIX,youtube.md
+  - DOMAIN-SUFFIX,youtube.me
+  - DOMAIN-SUFFIX,youtube.mk
+  - DOMAIN-SUFFIX,youtube.mn
+  - DOMAIN-SUFFIX,youtube.mx
+  - DOMAIN-SUFFIX,youtube.my
+  - DOMAIN-SUFFIX,youtube.ng
+  - DOMAIN-SUFFIX,youtube.ni
+  - DOMAIN-SUFFIX,youtube.nl
+  - DOMAIN-SUFFIX,youtube.no
+  - DOMAIN-SUFFIX,youtube.pa
+  - DOMAIN-SUFFIX,youtube.pe
+  - DOMAIN-SUFFIX,youtube.ph
+  - DOMAIN-SUFFIX,youtube.pk
+  - DOMAIN-SUFFIX,youtube.pl
+  - DOMAIN-SUFFIX,youtube.pr
+  - DOMAIN-SUFFIX,youtube.pt
+  - DOMAIN-SUFFIX,youtube.qa
+  - DOMAIN-SUFFIX,youtube.ro
+  - DOMAIN-SUFFIX,youtube.rs
+  - DOMAIN-SUFFIX,youtube.ru
+  - DOMAIN-SUFFIX,youtube.sa
+  - DOMAIN-SUFFIX,youtube.se
+  - DOMAIN-SUFFIX,youtube.sg
+  - DOMAIN-SUFFIX,youtube.si
+  - DOMAIN-SUFFIX,youtube.sk
+  - DOMAIN-SUFFIX,youtube.sn
+  - DOMAIN-SUFFIX,youtube.soy
+  - DOMAIN-SUFFIX,youtube.sv
+  - DOMAIN-SUFFIX,youtube.tn
+  - DOMAIN-SUFFIX,youtube.tv
+  - DOMAIN-SUFFIX,youtube.ua
+  - DOMAIN-SUFFIX,youtube.ug
+  - DOMAIN-SUFFIX,youtube.uy
+  - DOMAIN-SUFFIX,youtube.vn
+  - DOMAIN-SUFFIX,youtubeeducation.com
+  - DOMAIN-SUFFIX,youtubeembeddedplayer.googleapis.com
+  - DOMAIN-SUFFIX,youtubefanfest.com
+  - DOMAIN-SUFFIX,youtubegaming.com
+  - DOMAIN-SUFFIX,youtubego.co.id
+  - DOMAIN-SUFFIX,youtubego.co.in
+  - DOMAIN-SUFFIX,youtubego.com
+  - DOMAIN-SUFFIX,youtubego.com.br
+  - DOMAIN-SUFFIX,youtubego.id
+  - DOMAIN-SUFFIX,youtubego.in
+  - DOMAIN-SUFFIX,youtubei.googleapis.com
+  - DOMAIN-SUFFIX,youtubekids.com
+  - DOMAIN-SUFFIX,youtubemobilesupport.com
+  - DOMAIN-SUFFIX,yt.be
+  - DOMAIN-SUFFIX,ytimg.com
+  - DOMAIN-KEYWORD,youtube
+  - IP-CIDR,172.110.32.0/21
+  - IP-CIDR,216.73.80.0/20
+  # Spotify
+  - DOMAIN,audio4-ak-spotify-com.akamaized.net
+  - DOMAIN,cdn-spotify-experiments.conductrics.com
+  - DOMAIN,heads-ak-spotify-com.akamaized.net
+  - DOMAIN,spotify.com.edgesuite.net
+  - DOMAIN,spotify.map.fastly.net
+  - DOMAIN,spotify.map.fastlylb.net
+  - DOMAIN-SUFFIX,audio-ak-spotify-com.akamaized.net
+  - DOMAIN-SUFFIX,byspotify.com
+  - DOMAIN-SUFFIX,heads4-ak-spotify-com.akamaized.net
+  - DOMAIN-SUFFIX,pscdn.co
+  - DOMAIN-SUFFIX,scdn.co
+  - DOMAIN-SUFFIX,spoti.fi
+  - DOMAIN-SUFFIX,spotify-com.akamaized.net
+  - DOMAIN-SUFFIX,spotify-everywhere.com
+  - DOMAIN-SUFFIX,spotify.app.link
+  - DOMAIN-SUFFIX,spotify.com
+  - DOMAIN-SUFFIX,spotify.design
+  - DOMAIN-SUFFIX,spotifycdn.com
+  - DOMAIN-SUFFIX,spotifycdn.net
+  - DOMAIN-SUFFIX,spotifycharts.com
+  - DOMAIN-SUFFIX,spotifycodes.com
+  - DOMAIN-SUFFIX,spotifyforbrands.com
+  - DOMAIN-SUFFIX,spotifyjobs.com
+  - DOMAIN-SUFFIX,spotifynewsroom.jp
+  - DOMAIN-SUFFIX,spotilocal.com
+  - DOMAIN-SUFFIX,tospotify.com
+  - DOMAIN-KEYWORD,spotify
+  - IP-CIDR,104.154.127.126/32
+  - IP-CIDR,35.186.224.47/32
+
+  # ======= AI (custom) =======
   # Perplexity
   - DOMAIN-SUFFIX,perplexity.ai
   # HuggingFace
   - DOMAIN-SUFFIX,huggingface.co
   # Mistral
   - DOMAIN-SUFFIX,mistral.ai
-  # Groq / Grok / xAI
+  # Groq / xAI
   - DOMAIN-SUFFIX,groq.com
-  - DOMAIN-SUFFIX,grok.com
   - DOMAIN-SUFFIX,x.ai
   # Stability
   - DOMAIN-SUFFIX,stability.ai
@@ -93,53 +442,27 @@ payload:
   - DOMAIN-SUFFIX,jasper.ai
   - DOMAIN,gateway.ai.cloudflare.com
 
-  # ======= Social =======
-  # Twitter / X
-  - DOMAIN-SUFFIX,x.com
-  - DOMAIN-SUFFIX,twitter.com
-  - DOMAIN-SUFFIX,twimg.com
-  # Instagram
-  - DOMAIN-SUFFIX,instagram.com
-  - DOMAIN-SUFFIX,cdninstagram.com
+  # ======= Media (custom) =======
+  - DOMAIN-SUFFIX,medium.com
+
+  # ======= Social (custom) =======
   # Facebook
   - DOMAIN-SUFFIX,facebook.com
   - DOMAIN-SUFFIX,fbcdn.net
-  # WhatsApp
-  - DOMAIN-SUFFIX,whatsapp.com
-  - DOMAIN-SUFFIX,whatsapp.net
-  # LinkedIn
-  - DOMAIN-SUFFIX,linkedin.com
-  - DOMAIN-SUFFIX,licdn.com
-  - DOMAIN-SUFFIX,lnkd.in
-  - DOMAIN-KEYWORD,linkedin
-  - DOMAIN-SUFFIX,licdn.cn
-  # Discord
-  - DOMAIN-SUFFIX,discord.com
-  - DOMAIN-SUFFIX,discordapp.com
-  - DOMAIN-SUFFIX,discord.gg
-  # Slack
-  - DOMAIN-SUFFIX,slack.com
-  # Zoom / Meet
+  - DOMAIN-SUFFIX,fbcdn.com
+  - DOMAIN-SUFFIX,fb.com
+  - DOMAIN-SUFFIX,fb.me
+  - DOMAIN-SUFFIX,messenger.com
+  - DOMAIN-KEYWORD,facebook
+  # Instagram
+  - DOMAIN-SUFFIX,instagram.com
+  - DOMAIN-SUFFIX,cdninstagram.com
+  - DOMAIN-KEYWORD,instagram
+  # Zoom
   - DOMAIN-SUFFIX,zoom.us
   - DOMAIN-SUFFIX,meet.google.com
 
-  # ======= YouTube / Spotify / Media =======
-  - DOMAIN-SUFFIX,youtube.com
-  - DOMAIN-SUFFIX,ytimg.com
-  - DOMAIN-SUFFIX,googlevideo.com
-  - DOMAIN-SUFFIX,youtu.be
-  - DOMAIN-SUFFIX,yt.be
-  - DOMAIN-SUFFIX,youtube-nocookie.com
-  - DOMAIN-SUFFIX,ggpht.com
-  - DOMAIN-SUFFIX,googleusercontent.com
-  - DOMAIN-SUFFIX,gstatic.com
-  # Spotify
-  - DOMAIN-SUFFIX,spotify.com
-  - DOMAIN-SUFFIX,scdn.co
-  # Medium
-  - DOMAIN-SUFFIX,medium.com
-
-  # ======= Dev Tools =======
+  # ======= Dev Tools (custom) =======
   # JetBrains / Grazie
   - DOMAIN-SUFFIX,jetbrains.com
   - DOMAIN-SUFFIX,jetbrains.net
@@ -149,15 +472,10 @@ payload:
   - DOMAIN-SUFFIX,grazie.aws.intellij.net
   - DOMAIN-SUFFIX,grazie.jetbrains.com
   - DOMAIN,api.jetbrains.ai
-  # GitHub API
-  - DOMAIN,api.github.com
   # Google APIs
   - DOMAIN-SUFFIX,googleapis.com
   # Confluent (Kafka docs)
   - DOMAIN-SUFFIX,confluent.io
-  # Auth
-  - DOMAIN-SUFFIX,auth0.com
-  - DOMAIN-SUFFIX,sentry.io
   # Other
   - DOMAIN-SUFFIX,googlesyndication.com
   - DOMAIN,lh3.googleusercontent.com

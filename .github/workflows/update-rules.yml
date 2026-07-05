@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Update proxy.yaml
+      - name: Update proxy.yaml and proxy-surge.list
         run: |
           pip install pyyaml -q
           python3 << 'SCRIPT'
@@ -153,48 +153,64 @@ jobs:
                   if rule not in existing:
                       sections["Telegram"].append(rule)
 
-          # --- Build proxy.yaml ---
-          lines = ["payload:"]
+          # --- Build proxy.yaml (Clash Classical Ruleset) + proxy-surge.list (flat Surge list) ---
+          yaml_lines = ["payload:"]
+          surge_lines = []
 
           for section in SECTION_ORDER:
               if section not in sections:
                   continue
-              lines.append("")
-              lines.append(f"  # ======= {section} =======")
+              yaml_lines.append("")
+              yaml_lines.append(f"  # ======= {section} =======")
+              surge_lines.append("")
+              surge_lines.append(f"# ======= {section} =======")
               for rule in sections[section]:
                   if rule.startswith("#"):
-                      lines.append(f"  # {rule[2:]}")
+                      yaml_lines.append(f"  # {rule[2:]}")
+                      surge_lines.append(f"# {rule[2:]}")
                   else:
-                      lines.append(f"  - {rule}")
+                      yaml_lines.append(f"  - {rule}")
+                      surge_lines.append(rule)
 
           # Custom rules (not in blackmatrix7)
           for rule in CUSTOM:
               if rule == "":
-                  lines.append("")
+                  yaml_lines.append("")
+                  surge_lines.append("")
               elif rule.startswith("#"):
-                  lines.append(f"  {rule}")
+                  yaml_lines.append(f"  {rule}")
+                  surge_lines.append(rule)
               else:
-                  lines.append(f"  - {rule}")
+                  yaml_lines.append(f"  - {rule}")
+                  surge_lines.append(rule)
 
-          lines.append("")
-          new_content = "\n".join(lines)
+          yaml_lines.append("")
+          surge_lines.append("")
+          yaml_content = "\n".join(yaml_lines)
+          surge_content = "\n".join(surge_lines).lstrip("\n")
 
-          with open("proxy.yaml", "r") as f:
-              old_content = f.read()
+          def write_if_changed(path, new):
+              try:
+                  with open(path, "r") as f:
+                      old = f.read()
+              except FileNotFoundError:
+                  old = None
+              if new != old:
+                  with open(path, "w") as f:
+                      f.write(new)
+                  print(f"UPDATED: {path}")
+              else:
+                  print(f"NO CHANGES: {path}")
 
-          if new_content != old_content:
-              with open("proxy.yaml", "w") as f:
-                  f.write(new_content)
-              print("UPDATED: proxy.yaml changed")
-          else:
-              print("NO CHANGES")
+          write_if_changed("proxy.yaml", yaml_content)
+          write_if_changed("proxy-surge.list", surge_content)
           SCRIPT
 
       - name: Commit and push
         run: |
-          git diff --quiet proxy.yaml && echo "Nothing to commit" && exit 0
+          git diff --quiet proxy.yaml proxy-surge.list && echo "Nothing to commit" && exit 0
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add proxy.yaml
+          git add proxy.yaml proxy-surge.list
           git commit -m "auto: update proxy rules $(date +%Y-%m-%d)"
           git push

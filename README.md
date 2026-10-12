@@ -34,3 +34,19 @@
   - `00-base.json` — из `router/00-base.json`, с UUID и ws-path. Только на роутере.
   - `10-routing.json` — `generated/xray-routing.json`, кладёт и обновляет `xray-rules-update` (cron, раз в сутки).
   - `/etc/xray/nftables.nft` — из `router/nftables.nft`, грузится init-скриптом.
+
+Установка на роутер (один раз):
+
+```sh
+RAW=https://raw.githubusercontent.com/RobertMaz/Configuration/main
+mkdir -p /etc/xray/conf.d
+uclient-fetch -O /etc/xray/nftables.nft       $RAW/router/nftables.nft
+uclient-fetch -O /etc/xray/conf.d/00-base.json $RAW/router/00-base.json
+sed -i -e 's/__UUID__/<uuid>/' -e 's|__WS_PATH__|<ws-path>|' /etc/xray/conf.d/00-base.json
+uclient-fetch -O /usr/bin/xray-rules-update   $RAW/router/xray-rules-update
+chmod +x /usr/bin/xray-rules-update
+# в /etc/init.d/xray: -config /etc/xray/config.json → -confdir /etc/xray/conf.d
+echo '30 1 * * * /usr/bin/xray-rules-update' >> /etc/crontabs/root
+/etc/init.d/cron restart
+xray-rules-update && logread -e xray-rules
+```

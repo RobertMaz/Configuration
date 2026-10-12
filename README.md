@@ -11,7 +11,7 @@
 | `rules/custom.list` | ручные правила (`DOMAIN-SUFFIX,x.com`, `IP-CIDR,…`) | руками |
 | `generated/proxy.list` | Surge-list для subconverter | Action |
 | `generated/xray-routing.json` | объект `routing` для xray | Action |
-| `subconverter.ini` | политика Clash; URL зашит в выданные ссылки — **не переименовывать** | руками, редко |
+| `clash/subconverter.ini` | политика Clash, подключается через `&config=` в ссылке subconverter | руками, редко |
 | `router/xray-rules-update` | скрипт обновления на роутере | руками |
 | `scripts/build.py` | генератор | руками |
 

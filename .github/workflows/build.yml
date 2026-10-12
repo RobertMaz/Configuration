@@ -1,27 +1,23 @@
-name: Build rules
+name: Build
 
 on:
   push:
     branches: [main]
     paths:
-      - 'rules/**'
-      - 'scripts/build.py'
-      - '.github/workflows/build-rules.yml'
-  schedule:
-    - cron: '0 3 * * *'   # 06:00 MSK, до cron на роутерах
+      - 'proxy.list'
+      - 'build.py'
+      - '.github/workflows/build.yml'
   workflow_dispatch:
 
-# GitHub выключает schedule после 60 дней без коммитов (письмо приходит заранее).
-# Включить обратно: Actions → Build rules → Enable workflow.
 permissions:
   contents: write
 
 concurrency:
-  group: build-rules
+  group: build
   cancel-in-progress: false
 
 env:
-  XRAY_VERSION: v26.2.6   # как на home-msk; проверяем тем же ядром, что на роутерах
+  XRAY_VERSION: v26.2.6   # как на роутерах
 
 jobs:
   build:
@@ -30,7 +26,7 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Build
-        run: python3 scripts/build.py
+        run: python3 build.py
 
       - name: Validate with xray
         run: |
@@ -47,6 +43,6 @@ jobs:
           git diff --cached --quiet && echo "Nothing to commit" && exit 0
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git commit -m "auto: rebuild rules $(date +%Y-%m-%d)"
+          git commit -m "auto: rebuild generated/"
           git pull --rebase
           git push

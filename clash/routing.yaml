@@ -1,0 +1,15 @@
+# Правила для Clash/Mihomo-подписки 3x-ui.
+# Ссылка на этот файл стоит в панели: Подписка → Clash → subClashRules.
+# Панель вливает его в профиль каждого клиента; группу PROXY создаёт сама панель.
+
+rule-providers:
+  proxy:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/RobertMaz/Configuration/main/generated/proxy.list
+    interval: 86400
+
+rules:
+  - RULE-SET,proxy,PROXY
+  - MATCH,DIRECT

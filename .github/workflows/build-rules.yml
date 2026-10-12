@@ -1,0 +1,55 @@
+name: Build rules
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'rules/**'
+      - 'scripts/build.py'
+      - '.github/workflows/build-rules.yml'
+  schedule:
+    - cron: '0 3 * * *'   # 06:00 MSK, до cron на роутерах
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write   # keepalive: иначе GitHub выключает schedule после 60 дней без коммитов
+
+concurrency:
+  group: build-rules
+  cancel-in-progress: false
+
+env:
+  XRAY_VERSION: v26.2.6   # как на home-msk; проверяем тем же ядром, что на роутерах
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Build
+        run: python3 scripts/build.py
+
+      - name: Validate with xray
+        run: |
+          curl -fsSL -o /tmp/xray.zip "https://github.com/XTLS/Xray-core/releases/download/${XRAY_VERSION}/Xray-linux-64.zip"
+          unzip -q /tmp/xray.zip xray -d /tmp/xray
+          mkdir -p /tmp/conf
+          echo '{"outbounds":[{"tag":"direct","protocol":"freedom"},{"tag":"proxy","protocol":"freedom"}]}' > /tmp/conf/00-base.json
+          cp generated/xray-routing.json /tmp/conf/10-routing.json
+          /tmp/xray/xray run -test -confdir /tmp/conf
+
+      - name: Commit
+        run: |
+          git add generated/
+          git diff --cached --quiet && echo "Nothing to commit" && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "auto: rebuild rules $(date +%Y-%m-%d)"
+          git pull --rebase
+          git push
+
+      - name: Keep schedule alive
+        if: github.event_name == 'schedule'
+        uses: gautamkrishnar/keepalive-workflow@v2

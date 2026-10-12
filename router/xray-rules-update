@@ -1,0 +1,47 @@
+#!/bin/sh
+# Обновляет правила маршрутизации xray на роутере из GitHub.
+#
+# Ставится в /usr/bin/xray-rules-update, вызывается из cron раз в сутки.
+# Ожидает: xray запускается с -confdir /etc/xray/conf.d, где
+#   00-base.json    — inbounds/outbounds/секреты (только на роутере, без routing)
+#   10-routing.json — этот скрипт скачивает его из репозитория
+# Новый файл применяется, только если изменился и xray -test его принял;
+# иначе остаётся текущий и в logread пишется причина.
+
+set -u
+
+URL="${XRAY_RULES_URL:-https://raw.githubusercontent.com/RobertMaz/Configuration/main/generated/xray-routing.json}"
+CONF_DIR="${XRAY_CONF_DIR:-/etc/xray/conf.d}"
+TARGET="$CONF_DIR/10-routing.json"
+XRAY="${XRAY_BIN:-$(command -v xray)}"
+
+log() { logger -t xray-rules "$*"; echo "xray-rules: $*"; }
+
+[ -x "$XRAY" ] || { log "xray не найден (XRAY_BIN=$XRAY)"; exit 1; }
+
+TMP=$(mktemp -d /tmp/xray-rules.XXXXXX) || exit 1
+trap 'rm -rf "$TMP"' EXIT INT TERM
+
+if ! uclient-fetch -q -T 30 -O "$TMP/new.json" "$URL"; then
+    log "не скачался $URL — оставляю текущие правила"
+    exit 1
+fi
+
+if [ -f "$TARGET" ] && cmp -s "$TMP/new.json" "$TARGET"; then
+    exit 0
+fi
+
+# Проверка: полный конфиг (база + новые правила) должен пройти xray -test
+mkdir "$TMP/conf"
+for f in "$CONF_DIR"/*.json; do
+    [ "$f" = "$TARGET" ] || cp "$f" "$TMP/conf/"
+done
+cp "$TMP/new.json" "$TMP/conf/10-routing.json"
+if ! "$XRAY" run -test -confdir "$TMP/conf" >"$TMP/test.log" 2>&1; then
+    log "новые правила не прошли xray -test — оставляю текущие: $(tail -n 3 "$TMP/test.log" | tr '\n' ' ')"
+    exit 1
+fi
+
+cp "$TMP/new.json" "$TARGET.tmp" && mv "$TARGET.tmp" "$TARGET"
+/etc/init.d/xray restart
+log "правила обновлены ($(wc -c <"$TARGET") байт), xray перезапущен"

@@ -6,6 +6,7 @@ on:
     paths:
       - 'proxy.list'
       - 'build.py'
+      - 'router/00-base.json'
       - '.github/workflows/build.yml'
   workflow_dispatch:
 
@@ -16,9 +17,6 @@ concurrency:
   group: build
   cancel-in-progress: false
 
-env:
-  XRAY_VERSION: v26.2.6   # как на роутерах
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -28,14 +26,21 @@ jobs:
       - name: Build
         run: python3 build.py
 
+      # Обе версии, что крутятся на роутерах: latest (home-msk качает его при старте)
+      # и пакет opkg из OpenWrt 24.10. Проверяется полный конфиг: шаблон роутера + правила.
       - name: Validate with xray
         run: |
-          curl -fsSL -o /tmp/xray.zip "https://github.com/XTLS/Xray-core/releases/download/${XRAY_VERSION}/Xray-linux-64.zip"
-          unzip -q /tmp/xray.zip xray -d /tmp/xray
           mkdir -p /tmp/conf
-          echo '{"outbounds":[{"tag":"direct","protocol":"freedom"},{"tag":"proxy","protocol":"freedom"}]}' > /tmp/conf/00-base.json
+          sed -e 's/__UUID__/00000000-0000-0000-0000-000000000000/' -e 's|__WS_PATH__|/ci|' router/00-base.json > /tmp/conf/00-base.json
           cp generated/xray-routing.json /tmp/conf/10-routing.json
-          /tmp/xray/xray run -test -confdir /tmp/conf
+          for url in \
+            https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip \
+            https://github.com/XTLS/Xray-core/releases/download/v25.1.30/Xray-linux-64.zip
+          do
+            rm -rf /tmp/xray && curl -fsSL -o /tmp/xray.zip "$url" && unzip -q /tmp/xray.zip xray -d /tmp/xray
+            /tmp/xray/xray version
+            /tmp/xray/xray run -test -confdir /tmp/conf
+          done
 
       - name: Commit
         run: |

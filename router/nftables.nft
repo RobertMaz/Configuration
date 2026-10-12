@@ -1,0 +1,29 @@
+# Заворачивает TCP из LAN и самого роутера в xray (:12345).
+# Исходящий трафик xray (outbounds direct и proxy) помечен mark 255 и пропускается —
+# поэтому IP VPN-сервера здесь не нужен.
+# Грузится init-скриптом при старте xray и удаляется при остановке: xray лежит → интернет напрямую.
+
+table inet xray
+delete table inet xray
+
+table inet xray {
+  chain prerouting {
+    type nat hook prerouting priority dstnat; policy accept;
+    meta mark 255 return
+    ip daddr { 127.0.0.0/8, 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 224.0.0.0/4, 255.255.255.255 } return
+    meta l4proto tcp redirect to :12345
+  }
+
+  # QUIC (UDP/443) не проксируется — режем, клиенты откатываются на TCP
+  chain forward {
+    type filter hook forward priority filter; policy accept;
+    udp dport 443 reject
+  }
+
+  chain output {
+    type nat hook output priority -100; policy accept;
+    meta mark 255 return
+    ip daddr { 127.0.0.0/8, 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 224.0.0.0/4, 255.255.255.255 } return
+    meta l4proto tcp redirect to :12345
+  }
+}

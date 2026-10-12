@@ -1,0 +1,71 @@
+{
+  "log": {
+    "loglevel": "warning"
+  },
+  "inbounds": [
+    {
+      "tag": "socks-test",
+      "port": 1080,
+      "protocol": "socks",
+      "settings": {
+        "udp": true
+      }
+    },
+    {
+      "tag": "redirect-in",
+      "port": 12345,
+      "protocol": "dokodemo-door",
+      "settings": {
+        "network": "tcp,udp",
+        "followRedirect": true
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls", "quic"]
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "direct",
+      "protocol": "freedom",
+      "streamSettings": {
+        "sockopt": {
+          "mark": 255
+        }
+      }
+    },
+    {
+      "tag": "proxy",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "f.mazitovr.ru",
+            "port": 47776,
+            "users": [
+              {
+                "id": "__UUID__",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "f.mazitovr.ru"
+        },
+        "wsSettings": {
+          "path": "__WS_PATH__",
+          "host": "f.mazitovr.ru"
+        },
+        "sockopt": {
+          "mark": 255
+        }
+      }
+    }
+  ]
+}

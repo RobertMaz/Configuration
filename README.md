@@ -21,23 +21,16 @@
 | `generated/proxy.list` | rule-provider для Clash/Mihomo |
 | `generated/xray-routing.json` | `routing` для xray на роутерах |
 | `clash/routing.yaml` | ссылка на него — в 3x-ui `subClashRules` |
+| `router/00-base.json` | шаблон xray роутера (inbounds, outbounds); `__UUID__`/`__WS_PATH__` заполняются на роутере |
+| `router/nftables.nft` | заворот TCP в xray; без IP сервера — туннель пропускается по mark 255 |
 | `router/xray-rules-update` | cron-скрипт роутера: скачать → `xray -test` → применить |
 
 ## Клиенты
 
 - **Clash / Mihomo** (Clash Verge, CMFA, Clash Mi): Clash-подписка 3x-ui. Панель кладёт в профиль серверы клиента и правила из `clash/routing.yaml`.
 - **v2rayNG**: обычная подписка 3x-ui; маршрутизация — встроенными geosite/geoip на телефоне, этот репозиторий не используется.
-- **Роутеры**: xray с `-confdir /etc/xray/conf.d`:
-  - `00-base.json` — inbounds, outbounds `proxy`/`direct`, UUID. Без `routing`. Только на роутере.
-  - `10-routing.json` — `generated/xray-routing.json`, кладёт `xray-rules-update`.
-
-Установка скрипта на роутер:
-
-```sh
-uclient-fetch -O /usr/bin/xray-rules-update \
-  https://raw.githubusercontent.com/RobertMaz/Configuration/main/router/xray-rules-update
-chmod +x /usr/bin/xray-rules-update
-echo '30 1 * * * /usr/bin/xray-rules-update' >> /etc/crontabs/root
-/etc/init.d/cron restart
-xray-rules-update && logread -e xray-rules
-```
+- **Роутеры** (оба одинаковые, отличается только UUID): xray запускается своим `/etc/init.d/xray`
+  (он у каждого роутера свой и в репо не лежит) с `-confdir /etc/xray/conf.d`:
+  - `00-base.json` — из `router/00-base.json`, с UUID и ws-path. Только на роутере.
+  - `10-routing.json` — `generated/xray-routing.json`, кладёт и обновляет `xray-rules-update` (cron, раз в сутки).
+  - `/etc/xray/nftables.nft` — из `router/nftables.nft`, грузится init-скриптом.

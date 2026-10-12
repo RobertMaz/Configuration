@@ -2,7 +2,7 @@
 # Обновляет правила маршрутизации xray на роутере из GitHub.
 #
 # Ставится в /usr/bin/xray-rules-update, вызывается из cron раз в сутки.
-# Ожидает: xray запускается с -confdir /etc/xray/conf.d, где
+# Ожидает: /etc/init.d/xray запускает xray с -confdir /etc/xray/conf.d, где
 #   00-base.json    — inbounds/outbounds/секреты (только на роутере, без routing)
 #   10-routing.json — этот скрипт скачивает его из репозитория
 # Новый файл применяется, только если изменился и xray -test его принял;
@@ -13,11 +13,17 @@ set -u
 URL="${XRAY_RULES_URL:-https://raw.githubusercontent.com/RobertMaz/Configuration/main/generated/xray-routing.json}"
 CONF_DIR="${XRAY_CONF_DIR:-/etc/xray/conf.d}"
 TARGET="$CONF_DIR/10-routing.json"
-XRAY="${XRAY_BIN:-$(command -v xray)}"
+# /usr/bin/xray — пакет opkg; /tmp/xray — home-msk, init качает бинарник при старте
+XRAY="${XRAY_BIN:-}"
+if [ -z "$XRAY" ]; then
+    for candidate in /usr/bin/xray /tmp/xray; do
+        [ -x "$candidate" ] && XRAY="$candidate" && break
+    done
+fi
 
 log() { logger -t xray-rules "$*"; echo "xray-rules: $*"; }
 
-[ -x "$XRAY" ] || { log "xray не найден (XRAY_BIN=$XRAY)"; exit 1; }
+[ -n "$XRAY" ] && [ -x "$XRAY" ] || { log "xray не найден ни в /usr/bin, ни в /tmp — задай XRAY_BIN"; exit 1; }
 
 TMP=$(mktemp -d /tmp/xray-rules.XXXXXX) || exit 1
 trap 'rm -rf "$TMP"' EXIT INT TERM

@@ -11,9 +11,10 @@ on:
     - cron: '0 3 * * *'   # 06:00 MSK, до cron на роутерах
   workflow_dispatch:
 
+# GitHub выключает schedule после 60 дней без коммитов (письмо приходит заранее).
+# Включить обратно: Actions → Build rules → Enable workflow.
 permissions:
   contents: write
-  actions: write   # keepalive: иначе GitHub выключает schedule после 60 дней без коммитов
 
 concurrency:
   group: build-rules
@@ -49,7 +50,3 @@ jobs:
           git commit -m "auto: rebuild rules $(date +%Y-%m-%d)"
           git pull --rebase
           git push
-
-      - name: Keep schedule alive
-        if: github.event_name == 'schedule'
-        uses: gautamkrishnar/keepalive-workflow@v2

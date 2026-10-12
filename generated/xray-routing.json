@@ -1,6 +1,18 @@
 {
   "routing": {
     "domainStrategy": "AsIs",
+    "balancers": [
+      {
+        "tag": "proxy-or-direct",
+        "selector": [
+          "proxy"
+        ],
+        "strategy": {
+          "type": "leastPing"
+        },
+        "fallbackTag": "direct"
+      }
+    ],
     "rules": [
       {
         "type": "field",
@@ -238,7 +250,7 @@
           "keyword:whatsapp",
           "keyword:youtube"
         ],
-        "outboundTag": "proxy"
+        "balancerTag": "proxy-or-direct"
       },
       {
         "type": "field",
@@ -275,7 +287,7 @@
           "209.237.192.0/19",
           "216.73.80.0/20"
         ],
-        "outboundTag": "proxy"
+        "balancerTag": "proxy-or-direct"
       },
       {
         "type": "field",

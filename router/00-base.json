@@ -2,6 +2,12 @@
   "log": {
     "loglevel": "warning"
   },
+  "observatory": {
+    "subjectSelector": ["proxy"],
+    "probeUrl": "https://www.google.com/generate_204",
+    "probeInterval": "1m",
+    "enableConcurrency": true
+  },
   "inbounds": [
     {
       "tag": "socks-test",

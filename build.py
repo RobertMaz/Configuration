@@ -74,14 +74,23 @@ def render_clash(rules):
 def render_xray(rules):
     domains = [XRAY_DOMAIN_PREFIX[k] + v for k, v in rules if k != "IP-CIDR"]
     ips = [v for k, v in rules if k == "IP-CIDR"]
-    # Контракт с роутером: в его 00-base.json есть outbounds с тегами proxy и direct.
+    # Контракт с роутером: в его 00-base.json есть outbounds proxy и direct
+    # и observatory, который пингует proxy. Список идёт через balancer:
+    # proxy жив — в proxy, мёртв — fallback в direct (интернет не пропадает).
+    balancer = {
+        "tag": "proxy-or-direct",
+        "selector": ["proxy"],
+        "strategy": {"type": "leastPing"},
+        "fallbackTag": "direct",
+    }
     xray_rules = []
     if domains:
-        xray_rules.append({"type": "field", "domain": domains, "outboundTag": "proxy"})
+        xray_rules.append({"type": "field", "domain": domains, "balancerTag": balancer["tag"]})
     if ips:
-        xray_rules.append({"type": "field", "ip": ips, "outboundTag": "proxy"})
+        xray_rules.append({"type": "field", "ip": ips, "balancerTag": balancer["tag"]})
     xray_rules.append({"type": "field", "network": "tcp,udp", "outboundTag": "direct"})
-    return json.dumps({"routing": {"domainStrategy": "AsIs", "rules": xray_rules}}, indent=2) + "\n"
+    routing = {"domainStrategy": "AsIs", "balancers": [balancer], "rules": xray_rules}
+    return json.dumps({"routing": routing}, indent=2) + "\n"
 
 
 def write(path, content):

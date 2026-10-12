@@ -32,6 +32,9 @@
 - **Роутеры** (оба одинаковые, отличается только UUID): xray запускается своим `/etc/init.d/xray`
   (он у каждого роутера свой и в репо не лежит) с `-confdir /etc/xray/conf.d`:
   - `00-base.json` — из `router/00-base.json`, с UUID и ws-path. Только на роутере.
+    В нём `observatory` раз в минуту пингует туннель: если сервер мёртв, список идёт в `direct`
+    (balancer `proxy-or-direct` в правилах) — интернет дома не пропадает. Без `observatory`
+    новые правила не пройдут `xray -test`, и роутер останется на старых.
   - `10-routing.json` — `generated/xray-routing.json`, кладёт и обновляет `xray-rules-update` (cron, раз в сутки).
   - `/etc/xray/nftables.nft` — из `router/nftables.nft`, грузится init-скриптом.
 

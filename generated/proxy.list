@@ -198,6 +198,8 @@ DOMAIN-SUFFIX,youtu.be
 DOMAIN-SUFFIX,yt.be
 DOMAIN-SUFFIX,ytimg.com
 DOMAIN-SUFFIX,zoom.us
+DOMAIN-SUFFIX,instructables.com
+DOMAIN-SUFFIX,contentful.com
 DOMAIN,ai.google.dev
 DOMAIN,alkalimakersuite-pa.clients6.google.com
 DOMAIN,api.imem.app
@@ -213,8 +215,6 @@ DOMAIN,linkedin.sc.omtrdc.net
 DOMAIN,makersuite.google.com
 DOMAIN,servd-anthropic-website.b-cdn.net
 DOMAIN,static.cloudflareinsights.com
-DOMAIN,instructables.com
-DOMAIN,contentful.com
 DOMAIN-KEYWORD,alphauniverse
 DOMAIN-KEYWORD,autodesk
 DOMAIN-KEYWORD,claude

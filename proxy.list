@@ -205,8 +205,7 @@ DOMAIN-SUFFIX,youtu.be
 DOMAIN-SUFFIX,yt.be
 DOMAIN-SUFFIX,ytimg.com
 DOMAIN-SUFFIX,zoom.us
-DOMAIN-SUFFIX,instructables.com
-DOMAIN-SUFFIX,contentful.com
+
 
 # --- DOMAIN ---
 DOMAIN,ai.google.dev
@@ -227,6 +226,8 @@ DOMAIN,static.cloudflareinsights.com
 
 
 # --- DOMAIN-KEYWORD ---
+DOMAIN-KEYWORD,instructables
+DOMAIN-KEYWORD,contentful
 DOMAIN-KEYWORD,alphauniverse
 DOMAIN-KEYWORD,autodesk
 DOMAIN-KEYWORD,claude

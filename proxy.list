@@ -229,6 +229,7 @@ DOMAIN,static.cloudflareinsights.com
 
 # --- DOMAIN-KEYWORD ---
 DOMAIN-KEYWORD,instructables
+DOMAIN-KEYWORD,anydesk
 DOMAIN-KEYWORD,contentful
 DOMAIN-KEYWORD,alphauniverse
 DOMAIN-KEYWORD,autodesk

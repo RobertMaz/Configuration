@@ -259,7 +259,8 @@
           "keyword:twitter",
           "keyword:whatsapp",
           "keyword:youtube",
-          "keyword:adobe"
+          "keyword:adobe",
+          "keyword:cloudfront"
         ],
         "balancerTag": "proxy-or-direct"
       },

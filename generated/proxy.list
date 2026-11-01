@@ -241,6 +241,7 @@ DOMAIN-KEYWORD,stitch
 DOMAIN-KEYWORD,twitter
 DOMAIN-KEYWORD,whatsapp
 DOMAIN-KEYWORD,youtube
+DOMAIN-KEYWORD,adobe
 IP-CIDR,5.28.192.0/18,no-resolve
 IP-CIDR,18.194.0.0/15,no-resolve
 IP-CIDR,24.199.123.28/32,no-resolve

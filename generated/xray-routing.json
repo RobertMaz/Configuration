@@ -258,7 +258,8 @@
           "keyword:stitch",
           "keyword:twitter",
           "keyword:whatsapp",
-          "keyword:youtube"
+          "keyword:youtube",
+          "keyword:adobe"
         ],
         "balancerTag": "proxy-or-direct"
       },

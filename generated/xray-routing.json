@@ -17,6 +17,7 @@
       {
         "type": "field",
         "domain": [
+          "domain:diodov.net",
           "domain:accounts.google.com",
           "domain:actualbudget.org",
           "domain:agenta.ai",

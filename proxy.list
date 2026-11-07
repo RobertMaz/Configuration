@@ -6,6 +6,7 @@
 #   IP-CIDR,1.2.3.0/24          подсеть (трафик без домена, напр. Telegram MTProto)
 
 # --- DOMAIN-SUFFIX ---
+DOMAIN-SUFFIX,diodov.net
 DOMAIN-SUFFIX,accounts.google.com
 DOMAIN-SUFFIX,actualbudget.org
 DOMAIN-SUFFIX,agenta.ai

@@ -1,24 +1,34 @@
 #!/usr/bin/env python3
-"""Проверяет proxy.list и собирает из него готовые файлы для клиентов.
+"""Собирает единую конфигурацию правил для Clash/Mihomo-клиентов и xray-роутеров.
 
-    proxy.list -> generated/proxy.list         rule-provider для Clash/Mihomo
-               -> generated/xray-routing.json  объект routing для xray на роутерах
+    proxy.list     ─┐
+    categories.list─┼─> generated/proxy.list        всё через VPN (rule-provider)
+                    │   generated/reject.list       реклама в блок (rule-provider)
+                    └─> generated/xray-routing.json  routing для xray на роутерах
 
-Любая ошибка в proxy.list роняет сборку: generated/ не меняется, клиенты
-продолжают тянуть последнюю валидную версию. Только stdlib.
+Категории (blackmatrix7) скачиваются в .cache/ при первой сборке; флаг --refresh
+обновляет. Офлайн-сборка работает из кеша. Любая ошибка роняет сборку:
+generated/ не меняется, клиенты продолжают тянуть последнюю валидную версию.
+Только stdlib.
 """
 import ipaddress
 import json
 import re
 import sys
+import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 SOURCE = ROOT / "proxy.list"
+CATEGORIES = ROOT / "categories.list"
+CACHE = ROOT / ".cache"
+BASE_URL = "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash"
 
 XRAY_DOMAIN_PREFIX = {"DOMAIN": "full:", "DOMAIN-SUFFIX": "domain:", "DOMAIN-KEYWORD": "keyword:"}
 HOSTNAME = re.compile(r"^(?=.{1,253}$)([a-z0-9_]([a-z0-9_-]{0,61}[a-z0-9_])?\.)*[a-z0-9_]([a-z0-9_-]{0,61}[a-z0-9_])?$")
 KEYWORD = re.compile(r"^[a-z0-9._-]+$")
+# строки payload категорий: "- DOMAIN-SUFFIX,x.com", "- +.x.com", "- x.com", "- IP-CIDR,..."
+CAT_LINE = re.compile(r"^\s*-\s+(.+?)\s*$")
 
 
 def parse(text):
@@ -63,18 +73,98 @@ def parse(text):
     return rules
 
 
-def render_clash(rules):
-    lines = ["# Сгенерировано build.py из proxy.list — руками не править."]
+def parse_categories():
+    """-> ([имя=Папка], [имя=Папка]) — секции [proxy] и [reject]."""
+    proxy, reject, current = [], [], None
+    for n, raw in enumerate(CATEGORIES.read_text(encoding="utf-8").splitlines(), 1):
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        if line.lower() == "[proxy]":
+            current = proxy
+            continue
+        if line.lower() == "[reject]":
+            current = reject
+            continue
+        if current is None or "=" not in line:
+            raise ValueError(f"categories.list:{n}: ожидается [proxy]/[reject] и строки имя=Папка — {raw!r}")
+        name, _, folder = (p.strip() for p in line.partition("="))
+        if not name or not folder:
+            raise ValueError(f"categories.list:{n}: кривая строка {raw!r}")
+        current.append((name, folder))
+    return proxy, reject
+
+
+def fetch(name, folder, refresh):
+    """Скачивает yaml категории в .cache/ (или берёт кеш) -> текст payload."""
+    cache = CACHE / f"{name}.yaml"
+    if cache.exists() and not refresh:
+        return cache.read_text(encoding="utf-8")
+    url = f"{BASE_URL}/{folder}/{folder}.yaml"
+    try:
+        with urllib.request.urlopen(url, timeout=60) as r:
+            body = r.read().decode("utf-8")
+    except Exception as e:
+        where = "кеш отсутствует" if not cache.exists() else "кеш есть, но --refresh"
+        raise ValueError(f"категория {name} ({url}) не скачалась ({e}); {where}") from e
+    CACHE.mkdir(exist_ok=True)
+    cache.write_text(body, encoding="utf-8")
+    return body
+
+
+def parse_category(name, body):
+    """payload категории -> [(TYPE, value)]; доменный формат (+.x.com) -> DOMAIN-SUFFIX."""
+    rules = []
+    for line in body.splitlines():
+        m = CAT_LINE.match(line)
+        if not m:
+            continue
+        item = m.group(1)
+        if "," in item:
+            kind, _, value = (p.strip() for p in item.partition(","))
+            kind = kind.upper()
+            value = value.lower().strip("'\"")
+        else:
+            kind, value = "DOMAIN-SUFFIX", item.lower().lstrip("+*").lstrip(".")
+        if kind == "IP-CIDR":
+            try:
+                value = str(ipaddress.ip_network(value, strict=False))
+            except ValueError:
+                continue
+        elif kind in XRAY_DOMAIN_PREFIX:
+            if not (HOSTNAME.match(value) or (kind == "DOMAIN-SUFFIX" and value)):
+                continue
+        else:  # PROCESS-NAME и прочее — не для сетевых правил
+            continue
+        rules.append((kind, value))
+    if not rules:
+        raise ValueError(f"категория {name}: распознано 0 правил — формат источника изменился?")
+    return rules
+
+
+def merge(*batches):
+    out, seen = [], set()
+    for batch in batches:
+        for rule in batch:
+            if rule not in seen:
+                seen.add(rule)
+                out.append(rule)
+    return out
+
+
+def render_clash(rules, header):
+    lines = [f"# Сгенерировано build.py — руками не править. {header}"]
     for kind, value in rules:
         # no-resolve: Clash не резолвит каждый домен ради проверки IP-правила
         lines.append(f"{kind},{value},no-resolve" if kind == "IP-CIDR" else f"{kind},{value}")
     return "\n".join(lines) + "\n"
 
 
-def render_xray(rules):
-    domains = [XRAY_DOMAIN_PREFIX[k] + v for k, v in rules if k != "IP-CIDR"]
-    ips = [v for k, v in rules if k == "IP-CIDR"]
-    # Контракт с роутером: в его 00-base.json есть outbounds proxy и direct
+def render_xray(proxy_rules, reject_rules):
+    domains = [XRAY_DOMAIN_PREFIX[k] + v for k, v in proxy_rules if k != "IP-CIDR"]
+    ips = [v for k, v in proxy_rules if k == "IP-CIDR"]
+    ads = [XRAY_DOMAIN_PREFIX[k] + v for k, v in reject_rules if k != "IP-CIDR"]
+    # Контракт с роутером: в его 00-base.json есть outbounds proxy, direct и block
     # и observatory, который пингует proxy. Список идёт через balancer:
     # proxy жив — в proxy, мёртв — fallback в direct (интернет не пропадает).
     balancer = {
@@ -84,6 +174,8 @@ def render_xray(rules):
         "fallbackTag": "direct",
     }
     xray_rules = []
+    if ads:  # реклама режется до всего прочего
+        xray_rules.append({"type": "field", "domain": ads, "outboundTag": "block"})
     if domains:
         xray_rules.append({"type": "field", "domain": domains, "balancerTag": balancer["tag"]})
     if ips:
@@ -103,10 +195,23 @@ def write(path, content):
 
 
 def main():
-    rules = parse(SOURCE.read_text(encoding="utf-8"))
-    print(f"правил: {len(rules)}")
-    write(ROOT / "generated/proxy.list", render_clash(rules))
-    write(ROOT / "generated/xray-routing.json", render_xray(rules))
+    refresh = "--refresh" in sys.argv
+    manual = parse(SOURCE.read_text(encoding="utf-8"))
+    cat_defs, reject_defs = parse_categories()
+
+    cat_rules, reject_rules = [], []
+    for name, folder in cat_defs + reject_defs:
+        got = parse_category(name, fetch(name, folder, refresh))
+        target = cat_rules if (name, folder) in cat_defs else reject_rules
+        target.extend(got)
+        print(f"категория {name}: {len(got)} правил")
+
+    proxy_all = merge(manual, cat_rules)
+    print(f"итого через VPN: {len(proxy_all)} правил (минуя {len(manual) + len(cat_rules) - len(proxy_all)} дублей), "
+          f"в блок: {len(reject_rules)}")
+    write(ROOT / "generated/proxy.list", render_clash(proxy_all, "Что через VPN: proxy.list + categories.list"))
+    write(ROOT / "generated/reject.list", render_clash(reject_rules, "Реклама в блок"))
+    write(ROOT / "generated/xray-routing.json", render_xray(proxy_all, reject_rules))
 
 
 if __name__ == "__main__":

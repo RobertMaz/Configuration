@@ -3,22 +3,47 @@
 Единый список «что идёт через VPN» для роутеров (xray) и Clash/Mihomo-клиентов.
 Через VPN — только то, что в списке, остальное напрямую.
 
+## Задачи
+
+- [x] ~~**Научить build.py вливать категории blackmatrix7 в роутерный вывод.**~~
+      СДЕЛАНО (21.11): categories.list + слияние в build.py; выходы
+      proxy.list (клиенты+роутеры), reject.list (реклама), xray-routing.json
+      (роутеры, реклама -> block). Дубли ручного списка и категорий съедаются
+      merge'ем — ручная чистка proxy.list не обязательна, но приветствуется.
+      Сейчас Clash-клиенты получают категории (Telegram/YouTube/Whatsapp/Instagram)
+      отдельными rule-provider'ами из профиля vpnAsCode, а роутеры едят только
+      `generated/xray-routing.json` — поэтому дубли четырёх сервисов пока
+      ОСТАВЛЕНЫ в proxy.list (роутерам больше неоткуда их взять).
+      Сделать:
+      - список категорий (имя + URL raw yaml blackmatrix7) — в конфиге build.py;
+      - при сборке скачивать их и конвертировать в правила routing
+        (DOMAIN-SUFFIX → domain:, DOMAIN-KEYWORD → keyword:, IP-CIDR → ip:[…]);
+      - валидация как сейчас: сбой загрузки/парсинга = красный Action,
+        generated/ не меняется;
+      - после этого дедуплицировать proxy.list: убрать дубли четырёх сервисов,
+        оставив TON-экосистему (fragment/ton/mbrx), nicegram/swiftgram,
+        Meta IP-блоки и WhatsApp voice (57.141.x) — их в категориях нет/не уверен.
+      Бонус-цель: тот же механизм даст роутерам будущие категории без ручной работы.
+
 ## Как поменять правила
 
-1. Отредактировать `proxy.list`, запушить в `main`.
-2. Action проверит список, соберёт `generated/`, прогонит через `xray -test` и закоммитит.
-   Ошибка в списке → Action красный, `generated/` не меняется, у всех остаётся последняя рабочая версия.
+1. Отредактировать `proxy.list` (точечное) или `categories.list` (целые сервисы), запушить.
+2. Action проверит, соберёт `generated/` (скачав свежие категории), прогонит `xray -test`, закоммитит.
+   Ошибка → Action красный, `generated/` не меняется, у всех остаётся последняя рабочая версия.
 3. Роутеры подтянут ночью, Clash-клиенты — в течение суток.
+4. Раз в сутки (cron 04:17) Action сам обновляет категории и пересобирает.
 
-Проверить локально до push: `python3 build.py`.
+Проверить локально до push: `python3 build.py` (кеш `.cache/`; `--refresh` — свежие категории).
 
 ## Файлы
 
 | Путь | Что |
 |---|---|
-| `proxy.list` | **источник** — единственное, что правится руками |
+| `proxy.list` | **источник** — ручные правила «через VPN» |
+| `categories.list` | **источник** — категории blackmatrix7 (секция [reject] = реклама) |
 | `build.py` | проверка + сборка |
-| `generated/proxy.list` | rule-provider для Clash/Mihomo |
+| `generated/proxy.list` | rule-provider «через VPN» (ручные + категории) |
+| `generated/reject.list` | rule-provider «реклама в блок» |
 | `generated/xray-routing.json` | `routing` для xray на роутерах |
 | `clash/routing.yaml` | ссылка на него — в 3x-ui `subClashRules` |
 | `router/00-base.json` | шаблон xray роутера (inbounds, outbounds); `__UUID__`/`__WS_PATH__` заполняются на роутере |

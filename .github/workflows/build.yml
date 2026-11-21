@@ -5,10 +5,13 @@ on:
     branches: [main]
     paths:
       - 'proxy.list'
+      - 'categories.list'
       - 'build.py'
       - 'router/00-base.json'
       - '.github/workflows/build.yml'
   workflow_dispatch:
+  schedule:
+    - cron: '17 4 * * *'   # дневное обновление категорий из blackmatrix7
 
 permissions:
   contents: write
@@ -24,7 +27,7 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Build
-        run: python3 build.py
+        run: python3 build.py --refresh
 
       # Обе версии, что крутятся на роутерах: latest (home-msk качает его при старте)
       # и пакет opkg из OpenWrt 24.10. Проверяется полный конфиг: шаблон роутера + правила.

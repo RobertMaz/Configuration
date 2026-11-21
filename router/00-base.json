@@ -3,7 +3,9 @@
     "loglevel": "warning"
   },
   "observatory": {
-    "subjectSelector": ["proxy"],
+    "subjectSelector": [
+      "proxy"
+    ],
     "probeUrl": "https://www.google.com/generate_204",
     "probeInterval": "1m",
     "enableConcurrency": true
@@ -27,7 +29,11 @@
       },
       "sniffing": {
         "enabled": true,
-        "destOverride": ["http", "tls", "quic"]
+        "destOverride": [
+          "http",
+          "tls",
+          "quic"
+        ]
       }
     }
   ],
@@ -47,8 +53,8 @@
       "settings": {
         "vnext": [
           {
-            "address": "f.mazitovr.ru",
-            "port": 47776,
+            "address": "__SERVER__",
+            "port": "__PORT__",
             "users": [
               {
                 "id": "__UUID__",
@@ -62,16 +68,20 @@
         "network": "ws",
         "security": "tls",
         "tlsSettings": {
-          "serverName": "f.mazitovr.ru"
+          "serverName": "__SERVER__"
         },
         "wsSettings": {
           "path": "__WS_PATH__",
-          "host": "f.mazitovr.ru"
+          "host": "__SERVER__"
         },
         "sockopt": {
           "mark": 255
         }
       }
+    },
+    {
+      "tag": "block",
+      "protocol": "blackhole"
     }
   ]
 }

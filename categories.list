@@ -1,0 +1,21 @@
+# Категории правил (blackmatrix7/ios_rule_script), сливаются с proxy.list при сборке.
+# Формат строки: имя=Папка (имя — для людей, Папка — точное имя в rule/Clash, регистр важен).
+# Секция [reject] — то, что блокируется (реклама): уходит в reject.list и в block роутера.
+# Правка этого файла = push; Action пересоберёт generated/.
+
+[proxy]
+telegram=Telegram
+youtube=YouTube
+whatsapp=Whatsapp
+instagram=Instagram
+twitter=Twitter
+facebook=Facebook
+discord=Discord
+copilot=Copilot
+notion=Notion
+gemini=Gemini
+claude=Claude
+jetbrains=Jetbrains
+
+[reject]
+ads=AdvertisingLite

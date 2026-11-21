@@ -1,7 +1,10 @@
 # Сгенерировано build.py из proxy.list — руками не править.
+DOMAIN-SUFFIX,diodov.net
 DOMAIN-SUFFIX,accounts.google.com
 DOMAIN-SUFFIX,actualbudget.org
 DOMAIN-SUFFIX,agenta.ai
+DOMAIN-SUFFIX,printables.com
+DOMAIN-SUFFIX,thingiverse.com
 DOMAIN-SUFFIX,ai.com
 DOMAIN-SUFFIX,airhorn.solutions
 DOMAIN-SUFFIX,airhornbot.com
@@ -197,6 +200,7 @@ DOMAIN-SUFFIX,youtu.be
 DOMAIN-SUFFIX,yt.be
 DOMAIN-SUFFIX,ytimg.com
 DOMAIN-SUFFIX,zoom.us
+DOMAIN-SUFFIX,magnumphotos.com
 DOMAIN,ai.google.dev
 DOMAIN,alkalimakersuite-pa.clients6.google.com
 DOMAIN,api.imem.app
@@ -213,6 +217,7 @@ DOMAIN,makersuite.google.com
 DOMAIN,servd-anthropic-website.b-cdn.net
 DOMAIN,static.cloudflareinsights.com
 DOMAIN-KEYWORD,instructables
+DOMAIN-KEYWORD,anydesk
 DOMAIN-KEYWORD,contentful
 DOMAIN-KEYWORD,alphauniverse
 DOMAIN-KEYWORD,autodesk
@@ -236,6 +241,8 @@ DOMAIN-KEYWORD,stitch
 DOMAIN-KEYWORD,twitter
 DOMAIN-KEYWORD,whatsapp
 DOMAIN-KEYWORD,youtube
+DOMAIN-KEYWORD,adobe
+DOMAIN-KEYWORD,cloudfront
 IP-CIDR,5.28.192.0/18,no-resolve
 IP-CIDR,18.194.0.0/15,no-resolve
 IP-CIDR,24.199.123.28/32,no-resolve

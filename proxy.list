@@ -6,9 +6,12 @@
 #   IP-CIDR,1.2.3.0/24          подсеть (трафик без домена, напр. Telegram MTProto)
 
 # --- DOMAIN-SUFFIX ---
+DOMAIN-SUFFIX,diodov.net
 DOMAIN-SUFFIX,accounts.google.com
 DOMAIN-SUFFIX,actualbudget.org
 DOMAIN-SUFFIX,agenta.ai
+DOMAIN-SUFFIX,printables.com
+DOMAIN-SUFFIX,thingiverse.com
 DOMAIN-SUFFIX,ai.com
 DOMAIN-SUFFIX,airhorn.solutions
 DOMAIN-SUFFIX,airhornbot.com
@@ -204,7 +207,7 @@ DOMAIN-SUFFIX,youtu.be
 DOMAIN-SUFFIX,yt.be
 DOMAIN-SUFFIX,ytimg.com
 DOMAIN-SUFFIX,zoom.us
-
+DOMAIN-SUFFIX,magnumphotos.com
 
 # --- DOMAIN ---
 DOMAIN,ai.google.dev
@@ -226,6 +229,7 @@ DOMAIN,static.cloudflareinsights.com
 
 # --- DOMAIN-KEYWORD ---
 DOMAIN-KEYWORD,instructables
+DOMAIN-KEYWORD,anydesk
 DOMAIN-KEYWORD,contentful
 DOMAIN-KEYWORD,alphauniverse
 DOMAIN-KEYWORD,autodesk
@@ -249,6 +253,8 @@ DOMAIN-KEYWORD,stitch
 DOMAIN-KEYWORD,twitter
 DOMAIN-KEYWORD,whatsapp
 DOMAIN-KEYWORD,youtube
+DOMAIN-KEYWORD,adobe
+DOMAIN-KEYWORD,cloudfront
 
 # --- IP-CIDR ---
 IP-CIDR,5.28.192.0/18

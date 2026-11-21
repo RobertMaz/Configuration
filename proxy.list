@@ -82,7 +82,6 @@ DOMAIN-SUFFIX,generativeai.google
 DOMAIN-SUFFIX,generativelanguage.googleapis.com
 DOMAIN-SUFFIX,ggpht.cn
 DOMAIN-SUFFIX,ggpht.com
-DOMAIN-SUFFIX,google.com
 DOMAIN-SUFFIX,googleapis.com
 DOMAIN-SUFFIX,googlesyndication.com
 DOMAIN-SUFFIX,googleusercontent.com
@@ -239,7 +238,6 @@ DOMAIN-KEYWORD,discordapp
 DOMAIN-KEYWORD,edgemv
 DOMAIN-KEYWORD,facebook
 DOMAIN-KEYWORD,generativelanguage
-DOMAIN-KEYWORD,google
 DOMAIN-KEYWORD,instagram
 DOMAIN-KEYWORD,neo4j
 DOMAIN-KEYWORD,nicegram

@@ -24,3 +24,5 @@ ads=AdvertisingLite
 # (медленные соединения через перехват). Вернуть тюнингом: cap<=50k в build.py
 # и/или без DOMAIN-KEYWORD-вытяжки.
 # ads-ru=geosite:category-ads-all@https://github.com/runetfreedom/russia-v2ray-rules-dat/releases/latest/download/geosite.dat
+# RU-трекеры/счётчики (RU AdList cntblock, ~566 доменных правил)
+ruads=easylist:https://raw.githubusercontent.com/easylist/ruadlist/master/cntblock.txt

@@ -1,0 +1,13 @@
+# Что блокируется ДОПОЛНИТЕЛЬНО к категориям [reject]. Формат как proxy.list.
+# Правится только этот файл; после push Action пересоберёт generated/.
+
+# --- VK / Mail.ru: прицельные рекламные эндпоинты (внутриплеерные баннеры) ---
+DOMAIN-SUFFIX,ad.mail.ru
+DOMAIN-SUFFIX,r.mradx.net
+DOMAIN-SUFFIX,top-fwz1.mail.ru
+
+# --- Rutube / Yandex: телеметрия и доставка рекламы ---
+DOMAIN-SUFFIX,yast.rutube.ru
+DOMAIN-SUFFIX,adstat.rutube.ru
+DOMAIN-SUFFIX,adfox.yandex.ru
+DOMAIN-SUFFIX,ads.adfox.ru

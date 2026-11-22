@@ -40,7 +40,8 @@
 | Путь | Что |
 |---|---|
 | `proxy.list` | **источник** — ручные правила «через VPN» |
-| `categories.list` | **источник** — категории blackmatrix7 (`имя=Папка`) и geosite-вытяжки из .dat (`имя=geosite:категория@url`; теги сравниваются в нижнем регистре — runetfreedom хранит в верхнем); [reject] = блок-лист; бюджет reject — 80k доменов (кап под RAM роутера, в build.py) |
+| `reject.list` | **источник** — ручные домены в блок (RU-видео: ad.mail.ru, r.mradx.net, adfox...) |
+| `categories.list` | **источник** — категории blackmatrix7 (`имя=Папка`) и geosite-вытяжки из .dat (`имя=geosite:категория@url`) и easylist (`имя=easylist:URL` — тянутся ||domain^); теги сравниваются в нижнем регистре — runetfreedom хранит в верхнем); [reject] = блок-лист; бюджет reject — 80k доменов (кап под RAM роутера, в build.py) |
 | `build.py` | проверка + сборка |
 | `generated/proxy.list` | rule-provider «через VPN» (ручные + категории) |
 | `generated/reject.list` | rule-provider «реклама в блок» |

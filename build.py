@@ -21,6 +21,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 SOURCE = ROOT / "proxy.list"
 CATEGORIES = ROOT / "categories.list"
+REJECT_EXTRA = ROOT / "reject.list"
 CACHE = ROOT / ".cache"
 # raw.githubusercontent из РФ душит большие файлы (обрыв ~15-20КБ) — jsDelivr зеркало
 BASE_URLS = [
@@ -100,6 +101,37 @@ def parse_categories():
             raise ValueError(f"categories.list:{n}: кривая строка {raw!r}")
         current.append((name, folder))
     return proxy, reject
+
+
+EASYLIST_DOMAIN = re.compile(r"^\|\|([a-z0-9.-]+)\^")
+
+
+def parse_easylist(text):
+    """easylist-формат -> [(TYPE, value)]: только чистые ||domain^ правила.
+    Исключения (@@) и косметика (##) игнорируются — не доменные блоки."""
+    out = []
+    for line in text.splitlines():
+        m = EASYLIST_DOMAIN.match(line.strip())
+        if m:
+            out.append(("DOMAIN-SUFFIX", m.group(1)))
+    if not out:
+        raise ValueError("easylist: 0 чистых доменных правил — формат источника изменился?")
+    return out
+
+
+def fetch_text(name, url, refresh):
+    """Скачивает текстовый источник (easylist) в .cache/<name>.txt."""
+    cache = CACHE / f"{name}.txt"
+    if cache.exists() and not refresh:
+        return cache.read_text(encoding="utf-8")
+    try:
+        with urllib.request.urlopen(url, timeout=180) as r:
+            body = r.read().decode("utf-8")
+    except Exception as e:
+        raise ValueError(f"easylist-источник {name} ({url}) не скачался ({e})") from e
+    CACHE.mkdir(exist_ok=True)
+    cache.write_text(body, encoding="utf-8")
+    return body
 
 
 def fetch_dat(name, url, refresh):
@@ -320,9 +352,13 @@ def main():
     manual = parse(SOURCE.read_text(encoding="utf-8"))
     cat_defs, reject_defs = parse_categories()
 
+    manual_reject = parse(REJECT_EXTRA.read_text(encoding="utf-8")) if REJECT_EXTRA.exists() else []
     cat_rules, reject_rules = [], []
+    reject_rules.extend(manual_reject)  # ручной reject.list — первым (приоритет)
     for name, value in cat_defs + reject_defs:
-        if value.startswith("geosite:"):
+        if value.startswith("easylist:"):
+            got = parse_easylist(fetch_text(name, value.removeprefix("easylist:"), refresh))
+        elif value.startswith("geosite:"):
             # формат: geosite:категория@url — вытаскиваем домены из .dat
             cat, _, url = value.partition("@")
             got = parse_geosite(fetch_dat(name, url, refresh), cat.removeprefix("geosite:"))

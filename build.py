@@ -22,13 +22,19 @@ ROOT = Path(__file__).resolve().parent
 SOURCE = ROOT / "proxy.list"
 CATEGORIES = ROOT / "categories.list"
 CACHE = ROOT / ".cache"
-BASE_URL = "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash"
+# raw.githubusercontent из РФ душит большие файлы (обрыв ~15-20КБ) — jsDelivr зеркало
+BASE_URLS = [
+    "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash",
+    "https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash",
+]
 
 XRAY_DOMAIN_PREFIX = {"DOMAIN": "full:", "DOMAIN-SUFFIX": "domain:", "DOMAIN-KEYWORD": "keyword:"}
 HOSTNAME = re.compile(r"^(?=.{1,253}$)([a-z0-9_]([a-z0-9_-]{0,61}[a-z0-9_])?\.)*[a-z0-9_]([a-z0-9_-]{0,61}[a-z0-9_])?$")
 KEYWORD = re.compile(r"^[a-z0-9._-]+$")
 # строки payload категорий: "- DOMAIN-SUFFIX,x.com", "- +.x.com", "- x.com", "- IP-CIDR,..."
 CAT_LINE = re.compile(r"^\s*-\s+(.+?)\s*$")
+# заголовок blackmatrix7: "# DOMAIN: 23753", "# DOMAIN-SUFFIX: 13939", ...
+META = re.compile(r"^#\s*((?:DOMAIN|DOMAIN-SUFFIX|DOMAIN-KEYWORD|IP-CIDR|IP-CIDR6)):\s*(\d+)")
 
 
 def parse(text):
@@ -95,25 +101,56 @@ def parse_categories():
     return proxy, reject
 
 
+def _complete(body):
+    """Число строк payload >= суммы счётчиков заголовка (обрыв ловится до кеша)."""
+    expected = sum(int(m.group(2)) for m in map(META.match, body.splitlines()) if m)
+    lines = sum(1 for l in body.splitlines() if CAT_LINE.match(l))
+    return not expected or lines >= expected
+
+
 def fetch(name, folder, refresh):
-    """Скачивает yaml категории в .cache/ (или берёт кеш) -> текст payload."""
+    """Скачивает yaml категории в .cache/ (или берёт кеш) -> текст payload.
+
+    Пробует оба зеркала; в кеш ложится только ПОЛНЫЙ файл (обрывы больших
+    файлов на raw.githubusercontent из РФ — не редкость, поймано 22.11)."""
     cache = CACHE / f"{name}.yaml"
     if cache.exists() and not refresh:
         return cache.read_text(encoding="utf-8")
-    url = f"{BASE_URL}/{folder}/{folder}.yaml"
-    try:
-        with urllib.request.urlopen(url, timeout=60) as r:
-            body = r.read().decode("utf-8")
-    except Exception as e:
+    body, errors = None, []
+    for base in BASE_URLS:
+        # у рекламных списков главный .yaml урезан (374 строки из 38066) —
+        # полный классический формат живёт в <Имя>_Classical.yaml
+        for suffix in ("_Classical.yaml", ".yaml"):
+            url = f"{base}/{folder}/{folder}{suffix}"
+            for attempt in range(2):
+                try:
+                    with urllib.request.urlopen(url, timeout=300) as r:
+                        got = r.read().decode("utf-8")
+                    if _complete(got):
+                        body = got
+                        break
+                    errors.append(f"{url}: неполный ({len(got)} байт)")
+                except Exception as e:
+                    errors.append(f"{url}: {e}")
+            if body is not None:
+                break
+        if body is not None:
+            break
+    if body is None:
         where = "кеш отсутствует" if not cache.exists() else "кеш есть, но --refresh"
-        raise ValueError(f"категория {name} ({url}) не скачалась ({e}); {where}") from e
+        raise ValueError(f"категория {name} не скачалась полностью; {'; '.join(errors)}; {where}")
     CACHE.mkdir(exist_ok=True)
     cache.write_text(body, encoding="utf-8")
     return body
 
 
 def parse_category(name, body):
-    """payload категории -> [(TYPE, value)]; доменный формат (+.x.com) -> DOMAIN-SUFFIX."""
+    """payload категории -> [(TYPE, value)]; доменный формат (+.x.com) -> DOMAIN-SUFFIX.
+
+    Полная проверка: сумма счётчиков в заголовке файла обязана совпадать с
+    числом распознанных правил — обрыв загрузки роняет сборку, а не молча
+    отдаёт 1% списка (поймано 22.11: ads — 374 строки из ~38000)."""
+    expected = sum(int(m.group(2)) for m in map(META.match, body.splitlines()) if m)
     rules = []
     for line in body.splitlines():
         m = CAT_LINE.match(line)
@@ -123,10 +160,10 @@ def parse_category(name, body):
         if "," in item:
             kind, _, value = (p.strip() for p in item.partition(","))
             kind = kind.upper()
-            value = value.lower().strip("'\"")
+            value = value.lower().split(",")[0].strip().strip("'\"")  # срезать no-resolve и прочие опции
         else:
             kind, value = "DOMAIN-SUFFIX", item.lower().lstrip("+*").lstrip(".")
-        if kind == "IP-CIDR":
+        if kind in ("IP-CIDR", "IP-CIDR6"):
             try:
                 value = str(ipaddress.ip_network(value, strict=False))
             except ValueError:
@@ -139,6 +176,11 @@ def parse_category(name, body):
         rules.append((kind, value))
     if not rules:
         raise ValueError(f"категория {name}: распознано 0 правил — формат источника изменился?")
+    if expected and len(rules) != expected:
+        raise ValueError(
+            f"категория {name}: неполная — распознано {len(rules)} правил, "
+            f"заголовок обещает {expected} (обрыв загрузки? перезапусти с --refresh)"
+        )
     return rules
 
 
@@ -161,9 +203,9 @@ def render_clash(rules, header):
 
 
 def render_xray(proxy_rules, reject_rules):
-    domains = [XRAY_DOMAIN_PREFIX[k] + v for k, v in proxy_rules if k != "IP-CIDR"]
-    ips = [v for k, v in proxy_rules if k == "IP-CIDR"]
-    ads = [XRAY_DOMAIN_PREFIX[k] + v for k, v in reject_rules if k != "IP-CIDR"]
+    domains = [XRAY_DOMAIN_PREFIX[k] + v for k, v in proxy_rules if k not in ("IP-CIDR", "IP-CIDR6")]
+    ips = [v for k, v in proxy_rules if k in ("IP-CIDR", "IP-CIDR6")]
+    ads = [XRAY_DOMAIN_PREFIX[k] + v for k, v in reject_rules if k not in ("IP-CIDR", "IP-CIDR6")]
     # Контракт с роутером: в его 00-base.json есть outbounds proxy, direct и block
     # и observatory, который пингует proxy. Список идёт через balancer:
     # proxy жив — в proxy, мёртв — fallback в direct (интернет не пропадает).

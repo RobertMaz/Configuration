@@ -381,6 +381,13 @@ def main():
         target.extend(got)
         print(f"категория {name}: {len(got)} правил")
 
+    # SKIP_REJECT применяется ко ВСЕМ reject-источникам: инфраструктура
+    # Google/YouTube не блокируется независимо от того, кто её принёс
+    before = len(reject_rules)
+    reject_rules = [r for r in reject_rules if r[0] == "IP-CIDR" or not SKIP_REJECT.search(r[1])]
+    if len(reject_rules) != before:
+        print(f"SKIP_REJECT: вычищено {before - len(reject_rules)} доменов Google-инфраструктуры (из всех источников)")
+
     # бюджет reject-списка: роутер (240МБ RAM) держит инлайн-домены —
     # сверх cap обрезаем, сохраняя порядок (проверенные источники первыми)
     REJECT_CAP = 80_000

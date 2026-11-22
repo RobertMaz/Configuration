@@ -20,5 +20,7 @@ jetbrains=Jetbrains
 [reject]
 # глобальная реклама (blackmatrix7, ~38k) — проверенная база
 ads=AdvertisingLite
-# RU-специфика (runetfreedom): те же category-ads-all, что на сервере
-ads-ru=geosite:category-ads-all@https://github.com/runetfreedom/russia-v2ray-rules-dat/releases/latest/download/geosite.dat
+# RU-специфика (runetfreedom) — ВЫКЛЮЧЕНА 22.11: 80k доменов положили роутер
+# (медленные соединения через перехват). Вернуть тюнингом: cap<=50k в build.py
+# и/или без DOMAIN-KEYWORD-вытяжки.
+# ads-ru=geosite:category-ads-all@https://github.com/runetfreedom/russia-v2ray-rules-dat/releases/latest/download/geosite.dat

@@ -113,8 +113,9 @@ SKIP_REJECT = re.compile(
     r"googleapis\.com|googleusercontent\.com|google\.(com|ru)|gvt1\.com|gvt2\.com|goo\.gl)$)"
 )
 # Осознанные исключения из SKIP_REJECT: чистая реклама на защищённых суффиксах.
-# Каждый домен — после живой проверки (эксперимент 22.11: ad.youtube.com из
-# froggeric NoYouTubeAdsDNS; инцидент плеера был про s.youtube.com, не про этот)
+# ad.youtube.com — проверен живьём 22.11: плеер цел, блок оставлен. ВАЖНО:
+# мобильную in-stream рекламу YouTube не убирает (та идёт с googlevideo.com,
+# того же CDN что видео — доменно неотличима); клиентский ad-block — ReVanced.
 REJECT_OVERRIDE = {"ad.youtube.com"}
 
 

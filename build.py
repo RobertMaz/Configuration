@@ -104,16 +104,30 @@ def parse_categories():
 
 
 EASYLIST_DOMAIN = re.compile(r"^\|\|([a-z0-9.-]+)\^")
+# Инфраструктура Google/YouTube: блок поддоменов ЛОМАЕТ сервисы (s.youtube.com
+# ронял воспроизведение — поймано 22.11). Рекламные же домены Google НЕ в этом
+# списке и блокируются как обычно.
+SKIP_REJECT = re.compile(
+    r"(^|\.)("
+    "youtube\.com$|youtu\.be$|ytimg\.com$|googlevideo\.com$|ggpht\.com$|"
+    "gstatic\.com$|googleapis\.com$|googleusercontent\.com$|google\.com$|"
+    "gvt1\.com$|gvt2\.com$|youtubei|goo\.gl$|google\.ru$"
+    ")$|^s[0-9]?\.youtube\.com$")
 
 
 def parse_easylist(text):
     """easylist-формат -> [(TYPE, value)]: только чистые ||domain^ правила.
     Исключения (@@) и косметика (##) игнорируются — не доменные блоки."""
-    out = []
+    out, skipped = [], 0
     for line in text.splitlines():
         m = EASYLIST_DOMAIN.match(line.strip())
         if m:
+            if SKIP_REJECT.search(m.group(1)):
+                skipped += 1
+                continue
             out.append(("DOMAIN-SUFFIX", m.group(1)))
+    if skipped:
+        print(f"easylist: пропущено {skipped} доменов Google-инфраструктуры (SKIP_REJECT)")
     if not out:
         raise ValueError("easylist: 0 чистых доменных правил — формат источника изменился?")
     return out

@@ -112,6 +112,10 @@ SKIP_REJECT = re.compile(
     r"|(www\.)?(youtube\.com|youtu\.be|ytimg\.com|googlevideo\.com|ggpht\.com|gstatic\.com|"
     r"googleapis\.com|googleusercontent\.com|google\.(com|ru)|gvt1\.com|gvt2\.com|goo\.gl)$)"
 )
+# Осознанные исключения из SKIP_REJECT: чистая реклама на защищённых суффиксах.
+# Каждый домен — после живой проверки (эксперимент 22.11: ad.youtube.com из
+# froggeric NoYouTubeAdsDNS; инцидент плеера был про s.youtube.com, не про этот)
+REJECT_OVERRIDE = {"ad.youtube.com"}
 
 
 def parse_easylist(text):
@@ -383,8 +387,10 @@ def main():
 
     # SKIP_REJECT применяется ко ВСЕМ reject-источникам: инфраструктура
     # Google/YouTube не блокируется независимо от того, кто её принёс
+    # (REJECT_OVERRIDE — управляемые исключения, см. у SKIP_REJECT)
     before = len(reject_rules)
-    reject_rules = [r for r in reject_rules if r[0] == "IP-CIDR" or not SKIP_REJECT.search(r[1])]
+    reject_rules = [r for r in reject_rules
+                    if r[0] == "IP-CIDR" or r[1] in REJECT_OVERRIDE or not SKIP_REJECT.search(r[1])]
     if len(reject_rules) != before:
         print(f"SKIP_REJECT: вычищено {before - len(reject_rules)} доменов Google-инфраструктуры (из всех источников)")
 

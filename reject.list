@@ -22,3 +22,8 @@ DOMAIN-SUFFIX,doubleclicksearch.com
 DOMAIN-SUFFIX,googlesyndication-cn.com
 DOMAIN-SUFFIX,googletagservices-cn.com
 DOMAIN-SUFFIX,2mdnsys.com
+
+# --- YouTube: реклама на защищённом SKIP_REJECT суффиксе — обход через
+# REJECT_OVERRIDE в build.py (эксперимент 22.11, инцидент был про s.youtube.com,
+# не про этот домен; откат = убрать строку здесь + из REJECT_OVERRIDE) ---
+DOMAIN,ad.youtube.com

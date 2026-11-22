@@ -108,11 +108,10 @@ EASYLIST_DOMAIN = re.compile(r"^\|\|([a-z0-9.-]+)\^")
 # ронял воспроизведение — поймано 22.11). Рекламные же домены Google НЕ в этом
 # списке и блокируются как обычно.
 SKIP_REJECT = re.compile(
-    r"(^|\.)("
-    "youtube\.com$|youtu\.be$|ytimg\.com$|googlevideo\.com$|ggpht\.com$|"
-    "gstatic\.com$|googleapis\.com$|googleusercontent\.com$|google\.com$|"
-    "gvt1\.com$|gvt2\.com$|youtubei|goo\.gl$|google\.ru$"
-    ")$|^s[0-9]?\.youtube\.com$")
+    r"(^|\.)((s[0-9]?|csi|footprints-pa|pagead2?)\.(youtube\.com|gstatic\.com|googleapis\.com)"
+    r"|(www\.)?(youtube\.com|youtu\.be|ytimg\.com|googlevideo\.com|ggpht\.com|gstatic\.com|"
+    r"googleapis\.com|googleusercontent\.com|google\.(com|ru)|gvt1\.com|gvt2\.com|goo\.gl)$)"
+)
 
 
 def parse_easylist(text):

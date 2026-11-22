@@ -93,12 +93,28 @@ def parse_categories():
             current = reject
             continue
         if current is None or "=" not in line:
-            raise ValueError(f"categories.list:{n}: ожидается [proxy]/[reject] и строки имя=Папка — {raw!r}")
+            raise ValueError(f"categories.list:{n}: ожидается [proxy]/[reject] и строки "
+                             f"имя=Папка или имя=geosite:категория@url — {raw!r}")
         name, _, folder = (p.strip() for p in line.partition("="))
         if not name or not folder:
             raise ValueError(f"categories.list:{n}: кривая строка {raw!r}")
         current.append((name, folder))
     return proxy, reject
+
+
+def fetch_dat(name, url, refresh):
+    """Скачивает geosite .dat в .cache/<name>.dat (или берёт кеш)."""
+    cache = CACHE / f"{name}.dat"
+    if cache.exists() and not refresh:
+        return cache.read_bytes()
+    try:
+        with urllib.request.urlopen(url, timeout=600) as r:
+            body = r.read()
+    except Exception as e:
+        raise ValueError(f"geosite-источник {name} ({url}) не скачался ({e})") from e
+    CACHE.mkdir(exist_ok=True)
+    cache.write_bytes(body)
+    return body
 
 
 def _complete(body):
@@ -184,6 +200,69 @@ def parse_category(name, body):
     return rules
 
 
+def _varint(buf, i):
+    result = shift = 0
+    while True:
+        b = buf[i]
+        i += 1
+        result |= (b & 0x7F) << shift
+        if not (b & 0x80):
+            return result, i
+        shift += 7
+
+
+def _fields(buf):
+    """Итератор полей protobuf-сообщения: yield (номер, wire, значение).
+    Любой мусор/обрыв в конце падает с ошибкой — это наша проверка полноты .dat."""
+    i = 0
+    while i < len(buf):
+        key, i = _varint(buf, i)
+        f, w = key >> 3, key & 7
+        if w == 2:
+            ln, i = _varint(buf, i)
+            if i + ln > len(buf):
+                raise ValueError("geosite: сообщение обрезано")
+            yield f, w, buf[i:i + ln]
+            i += ln
+        elif w == 0:
+            v, i = _varint(buf, i)
+            yield f, w, v
+        else:
+            raise ValueError(f"geosite: неожиданный wire-тип {w}")
+
+
+# типы Domain из proto v2fly: 0=Plain, 1=Regex, 2=Domain(суффикс), 3=Full
+GEOSITE_DOMAIN_TYPE = {0: "DOMAIN-KEYWORD", 2: "DOMAIN-SUFFIX", 3: "DOMAIN"}
+
+
+def parse_geosite(data, category):
+    """geosite.dat (protobuf GeositeList) -> [(TYPE, value)] одной категории."""
+    out = []
+    for f, w, entry in _fields(data):
+        if f != 1:
+            continue
+        tag, doms = None, []
+        for f2, w2, payload in _fields(entry):
+            if f2 == 1:
+                tag = payload.decode("utf-8", "replace").lower()  # runetfreedom держит теги в ВЕРХНЕМ регистре
+            elif f2 == 2:
+                dtype, val = None, None
+                for f3, w3, p3 in _fields(payload):
+                    if f3 == 1:
+                        dtype = p3
+                    elif f3 == 2:
+                        val = p3.decode("utf-8", "replace")
+                doms.append((dtype, val))
+        if tag == category:
+            for dtype, val in doms:
+                kind = GEOSITE_DOMAIN_TYPE.get(dtype)
+                if kind and val:
+                    out.append((kind, val.lower()))
+    if not out:
+        raise ValueError(f"geosite: категория {category!r} не найдена в .dat")
+    return out
+
+
 def merge(*batches):
     out, seen = [], set()
     for batch in batches:
@@ -242,11 +321,23 @@ def main():
     cat_defs, reject_defs = parse_categories()
 
     cat_rules, reject_rules = [], []
-    for name, folder in cat_defs + reject_defs:
-        got = parse_category(name, fetch(name, folder, refresh))
-        target = cat_rules if (name, folder) in cat_defs else reject_rules
+    for name, value in cat_defs + reject_defs:
+        if value.startswith("geosite:"):
+            # формат: geosite:категория@url — вытаскиваем домены из .dat
+            cat, _, url = value.partition("@")
+            got = parse_geosite(fetch_dat(name, url, refresh), cat.removeprefix("geosite:"))
+        else:
+            got = parse_category(name, fetch(name, value, refresh))
+        target = cat_rules if (name, value) in cat_defs else reject_rules
         target.extend(got)
         print(f"категория {name}: {len(got)} правил")
+
+    # бюджет reject-списка: роутер (240МБ RAM) держит инлайн-домены —
+    # сверх cap обрезаем, сохраняя порядок (проверенные источники первыми)
+    REJECT_CAP = 80_000
+    if len(reject_rules) > REJECT_CAP:
+        print(f"ВНИМАНИЕ: reject {len(reject_rules)} > cap {REJECT_CAP}, обрезано")
+        reject_rules = reject_rules[:REJECT_CAP]
 
     proxy_all = merge(manual, cat_rules)
     print(f"итого через VPN: {len(proxy_all)} правил (минуя {len(manual) + len(cat_rules) - len(proxy_all)} дублей), "

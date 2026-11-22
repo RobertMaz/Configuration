@@ -388,14 +388,26 @@ def main():
     if len(reject_rules) != before:
         print(f"SKIP_REJECT: вычищено {before - len(reject_rules)} доменов Google-инфраструктуры (из всех источников)")
 
-    # бюджет reject-списка: роутер (240МБ RAM) держит инлайн-домены —
-    # сверх cap обрезаем, сохраняя порядок (проверенные источники первыми)
-    REJECT_CAP = 80_000
+    proxy_all = merge(manual, cat_rules)
+
+    # пересечение с proxy: домен в обоих списках ведёт себя по-разному на
+    # роутере (block-правило первое) и клиентах (через туннель) — молчаливый
+    # источник багов (механика инцидента s.youtube, 22.11). Побеждает proxy.
+    proxy_set = set(proxy_all)
+    inter = [r for r in reject_rules if r in proxy_set]
+    if inter:
+        print(f"ПЕРЕСЕЧЕНИЕ proxy∩reject: {len(inter)} правил отдано proxy, из reject убраны "
+              f"(примеры: {', '.join(v for _, v in inter[:5])})")
+        reject_rules = [r for r in reject_rules if r not in proxy_set]
+
+    # бюджет reject-списка: роутер (240МБ RAM) держит инлайн-домены.
+    # Урок 22.11: 38k — работает, 80k — деградировал матчинг на соединение;
+    # при возврате RU-источников сверх cap обрезаем (проверенные первыми)
+    REJECT_CAP = 50_000
     if len(reject_rules) > REJECT_CAP:
         print(f"ВНИМАНИЕ: reject {len(reject_rules)} > cap {REJECT_CAP}, обрезано")
         reject_rules = reject_rules[:REJECT_CAP]
 
-    proxy_all = merge(manual, cat_rules)
     print(f"итого через VPN: {len(proxy_all)} правил (минуя {len(manual) + len(cat_rules) - len(proxy_all)} дублей), "
           f"в блок: {len(reject_rules)}")
     write(ROOT / "generated/proxy.list", render_clash(proxy_all, "Что через VPN: proxy.list + categories.list"))

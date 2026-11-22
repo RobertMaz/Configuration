@@ -11,3 +11,14 @@ DOMAIN-SUFFIX,yast.rutube.ru
 DOMAIN-SUFFIX,adstat.rutube.ru
 DOMAIN-SUFFIX,adfox.yandex.ru
 DOMAIN-SUFFIX,ads.adfox.ru
+
+# --- YouTube: long-tail рекламных доменов (из froggeric/DNS-blocklists
+# NoYouTubeAdsDNS, 22.11; ядро уже покрыто geosite+bm7) ---
+DOMAIN-SUFFIX,googleads.com
+DOMAIN-SUFFIX,adservice.google
+DOMAIN-SUFFIX,doubleclick.host
+DOMAIN-SUFFIX,doubleclickads.net
+DOMAIN-SUFFIX,doubleclicksearch.com
+DOMAIN-SUFFIX,googlesyndication-cn.com
+DOMAIN-SUFFIX,googletagservices-cn.com
+DOMAIN-SUFFIX,2mdnsys.com

@@ -6,6 +6,14 @@ DOMAIN-SUFFIX,yast.rutube.ru
 DOMAIN-SUFFIX,adstat.rutube.ru
 DOMAIN-SUFFIX,adfox.yandex.ru
 DOMAIN-SUFFIX,ads.adfox.ru
+DOMAIN-SUFFIX,googleads.com
+DOMAIN-SUFFIX,adservice.google
+DOMAIN-SUFFIX,doubleclick.host
+DOMAIN-SUFFIX,doubleclickads.net
+DOMAIN-SUFFIX,doubleclicksearch.com
+DOMAIN-SUFFIX,googlesyndication-cn.com
+DOMAIN-SUFFIX,googletagservices-cn.com
+DOMAIN-SUFFIX,2mdnsys.com
 DOMAIN,00-gov.cn
 DOMAIN,0024aadd.com
 DOMAIN,0026645142c89aeb1.com
